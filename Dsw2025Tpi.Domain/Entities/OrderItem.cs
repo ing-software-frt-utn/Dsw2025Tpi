@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    internal class OrderItem
+    public class OrderItem
     {
         public Guid Id { get; set; }
         public Guid OrderId { get; set; }
