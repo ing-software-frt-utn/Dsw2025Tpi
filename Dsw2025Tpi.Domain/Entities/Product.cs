@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dsw2025Ej15.Domain.Entities;
+namespace Dsw2025Tpi.Domain.Entities;
 
 public class Product : EntityBase
 {
