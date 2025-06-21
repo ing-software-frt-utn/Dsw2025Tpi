@@ -1,4 +1,6 @@
 
+using Dsw2025Tpi.Application.Services;
+
 namespace Dsw2025Tpi.Api;
 
 public class Program
@@ -11,6 +13,7 @@ public class Program
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddHealthChecks();
