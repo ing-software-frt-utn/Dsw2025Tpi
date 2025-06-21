@@ -44,7 +44,7 @@ public class ProductsManagementService
             request.Price < 0 ||
             request.Stock < 0)
         {
-            throw new ArgumentException("Valores para el producto no válidos");
+            throw new ArgumentException("Valores para el producto no validos");
         }
 
         var exist = await _repository.First<Product>(p => p.InternalCode == request.InternalCode);
