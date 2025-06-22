@@ -9,6 +9,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Domain.Interfaces;
 using static Dsw2025Tpi.Application.Dtos.ProductModel;
+using Microsoft.EntityFrameworkCore;
 
 
 
@@ -55,6 +56,34 @@ public class ProductsManagementService : IProductsManagementService
         await _repository.Add(product);
         return new ProductModel.Response(product.Id);
     }
+
+    public async Task<Product> UpdateAsync(Product product)
+    {
+        var existingProduct = await GetProductById(product.Id);
+
+        if (existingProduct == null)
+        {
+            throw new KeyNotFoundException($"Product with ID {product.Id} not found.");
+        }
+
+        existingProduct.Name = product.Name;
+        existingProduct.Description = product.Description;
+        existingProduct.CurrentUnitPrice = product.CurrentUnitPrice;
+        existingProduct.StockCuantity = product.StockCuantity;
+        existingProduct.Sku = product.Sku;
+        existingProduct.InternalCode = product.InternalCode;
+        existingProduct.IsActive = product.IsActive;
+
+        await _repository.Update(existingProduct);
+
+        return existingProduct;
+
+
+    }
+
+
+
+
 }
 
 
