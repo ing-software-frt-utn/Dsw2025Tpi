@@ -3,6 +3,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace Dsw2025Tpi.Api.Controllers
 {
     [ApiController]
@@ -51,7 +52,7 @@ namespace Dsw2025Tpi.Api.Controllers
             return Ok(products); // 200
         }
 
-        [HttpGet("{id:long}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var product = await _productsManagmentService.GetProductById(id);
@@ -61,6 +62,7 @@ namespace Dsw2025Tpi.Api.Controllers
 
             return Ok(product); // 200
         }
+
         [HttpPatch("{id:Guid}")] 
         public async Task<IActionResult> Disable(Guid id)
         {
@@ -70,6 +72,42 @@ namespace Dsw2025Tpi.Api.Controllers
                 return NotFound();
 
             return NoContent(); // 204
+        }
+
+        [HttpPut("{id:Guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] Product product)
+        {
+            
+            // 400
+            if (product == null ||
+                string.IsNullOrWhiteSpace(product.Sku) ||
+                string.IsNullOrWhiteSpace(product.InternalCode) ||
+                string.IsNullOrWhiteSpace(product.Name))
+            {
+                return BadRequest();
+            }
+
+            var existingProduct = await _productsManagmentService.GetProductById(id);
+
+
+            if (existingProduct is null)
+                return NotFound(); // 404
+
+            // Actualizar los campos del producto existente
+            existingProduct.Sku = product.Sku;
+            existingProduct.InternalCode = product.InternalCode;
+            existingProduct.Name = product.Name;
+            existingProduct.Description = product.Description;
+            existingProduct.CurrentUnitPrice = product.CurrentUnitPrice;
+            existingProduct.StockCuantity = product.StockCuantity;
+            existingProduct.IsActive = product.IsActive;
+
+
+            await _productsManagmentService.UpdateAsync(existingProduct);
+
+            return Ok(existingProduct); // 200
+
+
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Dsw2025Tpi.Application.Dtos.ProductModel;
+using Microsoft.EntityFrameworkCore;
 
 
 
@@ -70,6 +71,29 @@ public class ProductsManagementService : IProductsManagementService
         return true;
     }
 
+    public async Task<Product> UpdateAsync(Product product)
+    {
+        var existingProduct = await GetProductById(product.Id);
+
+        if (existingProduct == null)
+        {
+            throw new KeyNotFoundException($"Product with ID {product.Id} not found.");
+        }
+
+        existingProduct.Name = product.Name;
+        existingProduct.Description = product.Description;
+        existingProduct.CurrentUnitPrice = product.CurrentUnitPrice;
+        existingProduct.StockCuantity = product.StockCuantity;
+        existingProduct.Sku = product.Sku;
+        existingProduct.InternalCode = product.InternalCode;
+        existingProduct.IsActive = product.IsActive;
+
+        await _repository.Update(existingProduct);
+
+        return existingProduct;
+
+
+    }
 }
 
 

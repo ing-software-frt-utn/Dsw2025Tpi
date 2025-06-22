@@ -9,5 +9,6 @@ namespace Dsw2025Tpi.Application.Services
         Task<Product?> GetProductById(Guid id);
         Task<List<Product>?> GetProducts();
         Task<bool> DisableProductAsync(Guid id); 
+        Task<Product> UpdateAsync(Product product);
     }
 }
