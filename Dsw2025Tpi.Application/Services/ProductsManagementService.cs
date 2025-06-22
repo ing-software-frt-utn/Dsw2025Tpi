@@ -14,7 +14,7 @@ using static Dsw2025Tpi.Application.Dtos.ProductModel;
 
 namespace Dsw2025Tpi.Application.Services;
 
-public class ProductsManagementService
+public class ProductsManagementService : IProductsManagementService
 {
     private readonly IRepository _repository;
 
@@ -28,7 +28,7 @@ public class ProductsManagementService
         return await _repository.GetById<Product>(id);
     }
 
-    //se modifico respecto a la original
+
     public async Task<List<Product>?> GetProducts()
     {
         var products = await _repository.GetAll<Product>();
@@ -50,7 +50,7 @@ public class ProductsManagementService
         var exist = await _repository.First<Product>(p => p.InternalCode == request.InternalCode);
         if (exist != null) throw new DuplicatedEntityException($"Ya existe un producto con el Sku {request.InternalCode}");
 
-        var product = new Product(request.Sku,request.InternalCode, request.Descripcion, request.Name, request.Price, request.Stock);
+        var product = new Product(request.Sku, request.InternalCode, request.Descripcion, request.Name, request.Price, request.Stock);
 
         await _repository.Add(product);
         return new ProductModel.Response(product.Id);
