@@ -75,14 +75,15 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPut("{id:Guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Product product)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ProductModel.Request request)
         {
             
+
             // 400
-            if (product == null ||
-                string.IsNullOrWhiteSpace(product.Sku) ||
-                string.IsNullOrWhiteSpace(product.InternalCode) ||
-                string.IsNullOrWhiteSpace(product.Name))
+            if (request == null ||
+                string.IsNullOrWhiteSpace(request.Sku) ||
+                string.IsNullOrWhiteSpace(request.InternalCode) ||
+                string.IsNullOrWhiteSpace(request.Name))
             {
                 return BadRequest();
             }
@@ -94,13 +95,13 @@ namespace Dsw2025Tpi.Api.Controllers
                 return NotFound(); // 404
 
             // Actualizar los campos del producto existente
-            existingProduct.Sku = product.Sku;
-            existingProduct.InternalCode = product.InternalCode;
-            existingProduct.Name = product.Name;
-            existingProduct.Description = product.Description;
-            existingProduct.CurrentUnitPrice = product.CurrentUnitPrice;
-            existingProduct.StockCuantity = product.StockCuantity;
-            existingProduct.IsActive = product.IsActive;
+            existingProduct.Sku = request.Sku;
+            existingProduct.InternalCode = request.InternalCode;
+            existingProduct.Name = request.Name;
+            existingProduct.Description = request.Descripcion;
+            existingProduct.CurrentUnitPrice = request.Price;
+            existingProduct.StockCuantity = request.Stock;
+           
 
 
             await _productsManagmentService.UpdateAsync(existingProduct);
