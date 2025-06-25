@@ -4,9 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dsw2025Tpi.Domain.Entities
+namespace Dsw2025Tpi.Domain.Enums
 {
-    internal class OrderStatus
+    internal enum OrderStatus
     {
+        Pending,
+        Processing,
+        Shipped,
+        Delivered,
+        Cancelled,
     }
 }

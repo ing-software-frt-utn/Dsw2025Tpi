@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dsw2025Tpi.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,18 @@ namespace Dsw2025Tpi.Domain.Entities
 {
     internal class Order
     {
+        public DateTime Date { get; set; }
+        public string? ShippingAddress { get; set; }
+        public string? BillingAddress { get; set; }
+        public string? Notes { get; set; }
+        public decimal TotalAmount { get; set; }
+
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+
+        public Guid CustomerId { get; set; }
+        public Customer Customer { get; set; }
+
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
     }
 }
