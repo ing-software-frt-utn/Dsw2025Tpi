@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    internal class Order
+    internal class Order : EntityBase
     {
         public DateTime DateTime { get; set; }
         public string? ShippindAddress { get; set; }
