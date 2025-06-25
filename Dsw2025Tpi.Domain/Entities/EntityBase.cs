@@ -6,5 +6,6 @@ public abstract class EntityBase
     {
         Id = Guid.NewGuid();
     }
-    public Guid Id { get; }
+    public Guid Id { get; protected set; }
 }
+
