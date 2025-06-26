@@ -20,7 +20,7 @@ public class Program
         builder.Services.AddHealthChecks();
 
         builder.Services.AddScoped<IRepository, EfRepository>();
-        builder.Services.AddTransient<ProductManagementService>();
+        builder.Services.AddTransient<ProductsManagementService>();
 
         var app = builder.Build();
 
