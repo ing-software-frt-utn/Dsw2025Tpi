@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    internal class Product : EntityBase
+    public class Product : EntityBase
     {
         public string Sku { get; set; }
         public string Name { get; set; }
@@ -25,18 +25,6 @@ namespace Dsw2025Tpi.Domain.Entities
             CurrentUnitPrice = currentUnitPrice;
             StockQuantity = stockQuantity;
             IsActive = true;
-        }
-        public void SkuValidate()
-        {
-            if (Sku == this.Sku) throw new Exception();
-        }
-        public void StockValidate()
-        {
-            if (StockQuantity < 0) throw new ArgumentOutOfRangeException();
-        }
-        public void PriceValidate()
-        {
-            if(CurrentUnitPrice <=0) throw new ArgumentOutOfRangeException();
         }
     }
 }

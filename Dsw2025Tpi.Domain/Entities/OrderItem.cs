@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    internal class OrderItem : EntityBase
+    public class OrderItem : EntityBase
     {
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    internal enum OrderStatus
+    public enum OrderStatus
     {
         PENDING,
         PROCESSING,
