@@ -15,4 +15,12 @@ public class ProductsController : ControllerBase
         _service = service;
     }
 
+    [HttpGet()]
+    public async Task<IActionResult> GetProducts()
+    {
+        var products = await _service.GetProducts();
+        if (products == null || !products.Any()) return NoContent();
+        return Ok(products);
+    }
+     
 }
