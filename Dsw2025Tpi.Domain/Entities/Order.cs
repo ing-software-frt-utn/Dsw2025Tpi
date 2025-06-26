@@ -22,8 +22,8 @@ namespace Dsw2025Tpi.Domain.Entities
             ShippindAddress = shippindAddress;
             BillingAddress = billingAddress;
             Notes = notes;
-            TotalAmount = OrderItems.Sum(item => item.SubTotal);
             OrderItems = orderItems;
+            TotalAmount = OrderItems.Sum(item => item.SubTotal);
             CustomerId = customerId;
         }
         public required Customer Customer { get; set; }
