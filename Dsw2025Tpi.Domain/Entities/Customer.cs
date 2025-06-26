@@ -12,11 +12,14 @@ namespace Dsw2025Tpi.Domain.Entities
         public string? Name { get; set; }
         public string? PhoneNumber { get; set; }
         public List<Order> Orders { get; set; } = new List<Order>();
-        public Customer(string? email, string? name, string? phoneNumber)
+        public Customer() { }
+        public Customer(string email, string name, string phoneNumber, Guid orderId)
         {
             Email = email;
             Name = name;
             PhoneNumber = phoneNumber;
+            OrderId = orderId;
         }
+        public Guid OrderId { get; }
     }
 }

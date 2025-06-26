@@ -10,13 +10,16 @@ namespace Dsw2025Tpi.Domain.Entities
     {
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
-        public Product Product { get; set; }
-        public OrderItem(int quantity, decimal unitPrice, Product product)
+        public decimal SubTotal { get; set; }
+        public OrderItem() { }
+        public OrderItem(int quantity, Guid productId)
         {
             Quantity = quantity;
-            UnitPrice = unitPrice;
-            Product = product;
+            UnitPrice = Product!.CurrentUnitPrice;
+            ProductId = productId;
+            SubTotal = Quantity * UnitPrice;
         }
-        public decimal SubTotal() => Quantity * UnitPrice;
+        public required Product Product { get; set; }
+        public Guid ProductId { get; }
     }
 }

@@ -12,15 +12,21 @@ namespace Dsw2025Tpi.Domain.Entities
         public string? ShippindAddress { get; set; }
         public string? BillingAddress { get; set; }
         public string? Notes { get; set; }
+        public decimal TotalAmount { get; set; }
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public OrderStatus Status { get; set; } = OrderStatus.PENDING;
-        public Order(DateTime dateTime, string? shippindAddress, string? billingAddress, string? notes)
+        public Order() { }
+        public Order(string? shippindAddress, string? billingAddress, string? notes, List<OrderItem> orderItems,Guid customerId)
         {
-            DateTime = dateTime;
+            DateTime = DateTime.UtcNow;
             ShippindAddress = shippindAddress;
             BillingAddress = billingAddress;
             Notes = notes;
+            TotalAmount = OrderItems.Sum(item => item.SubTotal);
+            OrderItems = orderItems;
+            CustomerId = customerId;
         }
-        public decimal TotalAmount() => OrderItems.Sum(item => item.SubTotal());
+        public required Customer Customer { get; set; }
+        public Guid CustomerId { get; }
     }
 }
