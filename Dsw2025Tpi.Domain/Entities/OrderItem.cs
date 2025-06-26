@@ -14,9 +14,9 @@ namespace Dsw2025Tpi.Domain.Entities
         public OrderItem() { }
         public OrderItem(int quantity, Guid productId)
         {
+            ProductId = productId;
             Quantity = quantity;
             UnitPrice = Product!.CurrentUnitPrice;
-            ProductId = productId;
             SubTotal = Quantity * UnitPrice;
         }
         public required Product Product { get; set; }

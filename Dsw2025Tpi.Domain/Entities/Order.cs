@@ -16,15 +16,16 @@ namespace Dsw2025Tpi.Domain.Entities
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public OrderStatus Status { get; set; } = OrderStatus.PENDING;
         public Order() { }
-        public Order(string? shippindAddress, string? billingAddress, string? notes, List<OrderItem> orderItems,Guid customerId)
+        public Order(Guid customerId, string? shippindAddress, string? billingAddress, List<OrderItem> orderItems, string? notes)
         {
-            DateTime = DateTime.UtcNow;
+            CustomerId = customerId;
             ShippindAddress = shippindAddress;
             BillingAddress = billingAddress;
-            Notes = notes;
             OrderItems = orderItems;
+            DateTime = DateTime.UtcNow;
+            Notes = notes;
             TotalAmount = OrderItems.Sum(item => item.SubTotal);
-            CustomerId = customerId;
+            
         }
         public required Customer Customer { get; set; }
         public Guid CustomerId { get; }

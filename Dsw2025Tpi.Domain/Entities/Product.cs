@@ -16,11 +16,11 @@ namespace Dsw2025Tpi.Domain.Entities
         public int StockQuantity { get; set; }
         public bool IsActive { get; set; }
         public Product() { }
-        public Product(string sku, string name, string? internalCode, string? description, decimal currentUnitPrice, int stockQuantity)
+        public Product(string sku, string? internalCode, string name, string? description, decimal currentUnitPrice, int stockQuantity)
         {
             Sku = sku;
-            Name = name;
             InternalCode = internalCode;
+            Name = name;
             Description = description;
             CurrentUnitPrice = currentUnitPrice;
             StockQuantity = stockQuantity;
