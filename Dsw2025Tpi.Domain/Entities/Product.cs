@@ -1,4 +1,4 @@
-﻿namespace Dsw2025Tpi.Domain.Entities;
+namespace Dsw2025Tpi.Domain.Entities;
 
 public class Product: EntityBase
 {
@@ -19,4 +19,5 @@ public class Product: EntityBase
     public bool  IsActive { get; set; }
 
     public Guid? CategoryId { get; set; }
+
 }
