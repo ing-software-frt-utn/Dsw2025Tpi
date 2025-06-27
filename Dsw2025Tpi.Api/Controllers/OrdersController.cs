@@ -1,27 +1,28 @@
 ﻿using Dsw2025Ej15.Application.Exceptions;
 using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2025Tpi.Api.Controllers;
 
 [ApiController]
-[Route("api/orders/")]
+[Route("api/orders")]
 public class OrdersController : ControllerBase
 {
-    private readonly OrdersManagmentService _service;
-    public OrdersController(OrdersManagmentService ordersManagmentService)
+    private readonly IOrdersManagmentService _service;
+    public OrdersController(IOrdersManagmentService _ordersManagmentService)
     {
-        _service = ordersManagmentService;
+        _service = _ordersManagmentService;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] OrderModel.OrderRequest request)
+    public async Task<IActionResult> CreateOrder([FromBody] OrderModel.OrderRequest _request)
     {
         try
         {
-            var order = await _service.AddOrder(request);
-            return Created("api/order", order);
+            var _order = await _service.AddOrder(_request);
+            return Created("api/order", _order);
         }
         catch (ArgumentException ae)
         {

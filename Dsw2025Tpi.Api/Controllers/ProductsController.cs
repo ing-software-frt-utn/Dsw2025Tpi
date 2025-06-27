@@ -1,6 +1,7 @@
 ﻿using Dsw2025Ej15.Application.Dtos;
 using Dsw2025Ej15.Application.Exceptions;
 using Dsw2025Ej15.Application.Services;
+using Dsw2025Tpi.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2025Tpi.Api.Controllers;
@@ -9,41 +10,41 @@ namespace Dsw2025Tpi.Api.Controllers;
 [Route("api/products")]
 public class ProductsController : ControllerBase
 {
-    private readonly ProductsManagementService _service;
-    public ProductsController(ProductsManagementService productsManagementService)
+    private readonly IProductsManagementService _service;
+    public ProductsController(IProductsManagementService _productsManagementService)
     {
-        _service = productsManagementService;
+        _service = _productsManagementService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
-        var products = await _service.GetProducts();
-        if (products == null || !products.Any())
+        var _products = await _service.GetProducts();
+        if (_products == null || !_products.Any())
         {
             return NoContent();
         }
-        return Ok(products);
+        return Ok(_products);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetProductById(Guid id)
+    public async Task<IActionResult> GetProductById(Guid _id)
     {
-        var product = await _service.GetProductById(id);
-        if (product == null)
+        var _product = await _service.GetProductById(_id);
+        if (_product == null)
         {
-            return NotFound($"No se encontró el producto con Id {id}");
+            return NotFound($"No se encontró el producto con Id {_id}");
         }
-        return Ok(product);
+        return Ok(_product);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
+    public async Task<IActionResult> AddProduct([FromBody] ProductModel.ProductRequest _request)
     {
         try
         {
-            var product = await _service.AddProduct(request);
-            return Created("/product", product);
+            var _product = await _service.AddProduct(_request);
+            return Created("/product", _product);
         }
         catch (ArgumentException ae)
         {
@@ -61,16 +62,16 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
+    public async Task<IActionResult> UpdateProduct(Guid _id, [FromBody] ProductModel.ProductRequest _request)
     {
         try
         {
-            var product = await _service.DeleteProduct(id);
-            if (product == null)
+            var _product = await _service.DeleteProduct(_id);
+            if (_product == null)
             {
-                return NotFound($"No se encontró el producto con Id {id}");
+                return NotFound($"No se encontró el producto con Id {_id}");
             }
-            return Ok(product);
+            return Ok(_product);
         }
         catch (EntityNotFoundException enfe)
         {
@@ -87,12 +88,12 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProductById(Guid id, [FromBody] ProductModel.Request request)
+    public async Task<IActionResult> UpdateProductById(Guid _id, [FromBody] ProductModel.ProductRequest _request)
     {
         try
         {
-            var product = await _service.UpdateProduct(id, request);
-            return Ok(product);
+            var _product = await _service.UpdateProduct(_id, _request);
+            return Ok(_product);
         }
         catch (EntityNotFoundException enfe)
         {

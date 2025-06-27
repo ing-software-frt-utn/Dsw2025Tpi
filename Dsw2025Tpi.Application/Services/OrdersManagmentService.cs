@@ -20,49 +20,49 @@ namespace Dsw2025Tpi.Application.Services
         {
             _repository = repository;
         }
-        public async Task<OrderModel.OrderResponse> AddOrder(OrderModel.OrderRequest request)
+        public async Task<OrderModel.OrderResponse> AddOrder(OrderModel.OrderRequest _request)
         {
-            var exist = await _repository.GetById<Customer>(request.CustomerId);
-            if (exist == null) throw new EntityNotFoundException($"El cliente con Id {request.CustomerId} no existe");
+            var _exist = await _repository.GetById<Customer>(_request.CustomerId);
+            if (_exist == null) throw new EntityNotFoundException($"El cliente con Id {_request.CustomerId} no existe");
 
-            if (string.IsNullOrEmpty(request.ShippingAddress) || string.IsNullOrEmpty(request.BillingAddress))
+            if (string.IsNullOrEmpty(_request.ShippingAddress) || string.IsNullOrEmpty(_request.BillingAddress))
             {
                 throw new ArgumentException("Valores para el pedido no válidos");
             }
 
-            var orderItemsResponses = new List<OrderItemResponse>();
-            var orderItems = new List<OrderItem>();
+            var _orderItemsResponses = new List<OrderItemResponse>();
+            var _orderItems = new List<OrderItem>();
 
-            foreach (var item in request.OrderItemsRequest)
+            foreach (var _item in _request.OrderItemsRequest)
             {
-                var product = await _repository.GetById<Product>(item.ProductId);
-                if (product == null) throw new EntityNotFoundException($"No se encontró el producto con ID {item.ProductId}");
+                var _product = await _repository.GetById<Product>(_item.ProductId);
+                if (_product == null) throw new EntityNotFoundException($"No se encontró el producto con ID {_item.ProductId}");
 
-                product.ReduceStock(item.Quantity);
-                await _repository.Update(product);
+                _product.ReduceStock(_item.Quantity);
+                await _repository.Update(_product);
 
-                var orderItem = new OrderItem(item.Quantity, item.UnitPrice, item.ProductId);
-                orderItems.Add(orderItem);
-                await _repository.Add(orderItem);
-                orderItemsResponses.Add(new OrderItemResponse(
-                    item.ProductId,
-                    item.Quantity,
-                    product.Name!,
-                    product.Description!,
-                    product.CurrentUnitPrice
+                var _orderItem = new OrderItem(_item.Quantity, _item.UnitPrice, _item.ProductId);
+                _orderItems.Add(_orderItem);
+                await _repository.Add(_orderItem);
+                _orderItemsResponses.Add(new OrderItemResponse(
+                    _item.ProductId,
+                    _item.Quantity,
+                    _product.Name!,
+                    _product.Description!,
+                    _product.CurrentUnitPrice
                     ));
             }
 
-            var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems);
+            var _order = new Order(_request.CustomerId, _request.ShippingAddress, _request.BillingAddress, _orderItems);
 
-            await _repository.Add(order);
+            await _repository.Add(_order);
             return new OrderModel.OrderResponse(
-                order.Id,
-                order.CustomerId,
-                order.ShippingAddress,
-                order.BillingAddress,
-                orderItemsResponses,
-                order.TotalAmount
+                _order.Id,
+                _order.CustomerId,
+                _order.ShippingAddress,
+                _order.BillingAddress,
+                _orderItemsResponses,
+                _order.TotalAmount
             );
         }
     }
