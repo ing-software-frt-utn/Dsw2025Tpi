@@ -18,7 +18,7 @@ namespace Dsw2025Tpi.Application.Services
         {
             _repository = repository;
         }
-        public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
+        public async Task<OrderModel.OrderResponse> AddOrder(OrderModel.OrderRequest request)
         {
             var exist = await _repository.GetById<Customer>(request.CustomerId);
             if (exist == null) throw new EntityNotFoundException($"El cliente con Id {request.CustomerId} no existe");
@@ -43,13 +43,13 @@ namespace Dsw2025Tpi.Application.Services
 
             foreach (var item in request.OrderItems)
             {
-                var orderItem = new OrderItem(item.Quantity, item.Product!, order.Id);
+                var orderItem = new OrderItem(item.ProductId, item.Quantity, item.Product!.Name!, item.Product.Description!, item.UnitPrice, order.Id);
                 orderItems.Add(orderItem);
                 await _repository.Add(orderItem);
             }
 
             await _repository.Add(order);
-            return new OrderModel.Response(
+            return new OrderModel.OrderResponse(
                 order.Id,
                 order.CustomerId,
                 order.ShippingAddress,

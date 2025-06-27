@@ -57,4 +57,25 @@ public class ProductsManagementService
             product.Name!, product.Description!, product.CurrentUnitPrice,
             product.StockQuantity, product.IsActive);
     }
+    public async Task<ProductModel.Response> UpdateProduct(Guid id, ProductModel.Request request)
+    {
+        var product = await _repository.GetById<Product>(id);
+        if (product == null) throw new EntityNotFoundException($"El producto con Id {id} no existe");
+        if (string.IsNullOrWhiteSpace(request.Sku) ||
+            string.IsNullOrWhiteSpace(request.Name) ||
+            request.CurrentUnitPrice <= 0 || request.StockQuantity < 0)
+        {
+            throw new ArgumentException("Valores para el producto no válidos");
+        }
+        product.Sku = request.Sku;
+        product.InternalCode = request.InternalCode;
+        product.Name = request.Name;
+        product.Description = request.Description;
+        product.CurrentUnitPrice = request.CurrentUnitPrice;
+        product.StockQuantity = request.StockQuantity;
+        await _repository.Update(product);
+        return new ProductModel.Response(product.Id, product.Sku!, product.InternalCode!,
+            product.Name!, product.Description!, product.CurrentUnitPrice,
+            product.StockQuantity, product.IsActive);
+    }
 }
