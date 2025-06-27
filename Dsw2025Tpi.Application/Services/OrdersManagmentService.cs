@@ -21,26 +21,21 @@ namespace Dsw2025Tpi.Application.Services
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
             var exist = await _repository.GetById<Customer>(request.CustomerId);
-            if(exist == null) throw new EntityNotFoundException($"El cliente con Id {request.CustomerId} no existe");
-            
-            if (request.OrderItems == null || string.IsNullOrEmpty(request.ShippingAddress) 
+            if (exist == null) throw new EntityNotFoundException($"El cliente con Id {request.CustomerId} no existe");
+
+            if (request.OrderItems == null || string.IsNullOrEmpty(request.ShippingAddress)
                || string.IsNullOrEmpty(request.BillingAddress))
             {
                 throw new ArgumentException("Valores para el pedido no válidos");
             }
 
-            try
+            foreach (var item in request.OrderItems)
             {
-                foreach (var item in request.OrderItems)
-                {
-                    var product = await _repository.GetById<Product>(item.ProductId);
-                    if (product == null) throw new EntityNotFoundException($"No se encontró el producto con ID {item.ProductId}");
-                    product.ReduceStock(item.Quantity);
-                    await _repository.Update(product);
-                }
+                var product = await _repository.GetById<Product>(item.ProductId);
+                if (product == null) throw new EntityNotFoundException($"No se encontró el producto con ID {item.ProductId}");
+                product.ReduceStock(item.Quantity);
+                await _repository.Update(product);
             }
-            catch (EntityNotFoundException enf) { throw new EntityNotFoundException(enf.Message); }
-            catch (InvalidOperationException ioe) { throw new InvalidOperationException(ioe.Message); }
 
             var orderItems = new List<OrderItem>();
             orderItems = [];
