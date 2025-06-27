@@ -8,6 +8,8 @@ namespace Dsw2025Tpi.Domain.Entities;
 
 public class Product : EntityBase
 {
+    public object orders;
+
     public Product()
     {
 
@@ -23,6 +25,8 @@ public class Product : EntityBase
         this.stockQuantity = stockQuantity;
         this.isActive = isActive;
     }
+
+    public new Guid Id { get; set; }
     public string sku { get; set; }
     public string internalCode { get; set; }
     public string name { get; set; }
@@ -30,8 +34,6 @@ public class Product : EntityBase
     public decimal currentUnitPrice { get; set; }
     public int stockQuantity { get; set; }
     public bool isActive { get; set; }
-
-    public ICollection<OrderItem> orderItems { get; set; }
 
 
 }
