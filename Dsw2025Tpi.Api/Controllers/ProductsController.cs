@@ -26,11 +26,10 @@ public class ProductsController : ControllerBase
         }
         catch (EntityNotFoundException en)
         {
-            
+
             return NotFound(en.Message);
 
         }
-        
         
     }
 

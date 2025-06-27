@@ -48,11 +48,10 @@ public class ProductsManagementService
             product.CurrentUnitPrice);
     }
 
-    //Preguntar al profesor si esta funcion esta hecha correctamente; me genera inquietud si deberia hacerlo asi o deberia de usar la funcion GetProductById 
     public async Task<ProductModel.Response?> DisableProduct(Guid id)
     {
         var product = await _repository.GetById<Product>(id);
-        if (product == null) throw new EntityNotFoundException("No se encontro el producto que se desea obtener");
+        if (product == null) throw new EntityNotFoundException($"No se encontro el producto {id} que se desea obtener");
         product.IsActive = false;
         product = await _repository.Update(product);
         return new ProductModel.Response(product.Id, product.Sku, product.Name, product.CurrentUnitPrice);
