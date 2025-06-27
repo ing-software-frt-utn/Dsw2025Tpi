@@ -26,7 +26,6 @@ namespace Dsw2025Tpi.Domain.Entities
             TotalAmount = OrderItems.Sum(item => item.SubTotal);
             
         }
-        public Customer? Customer { get; set; }
         public Guid CustomerId { get; }
     }
 }

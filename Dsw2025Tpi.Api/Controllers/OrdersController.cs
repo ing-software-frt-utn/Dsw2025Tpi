@@ -23,9 +23,9 @@ public class OrdersController : ControllerBase
             var order = await _service.AddOrder(request);
             return Created("api/order", order);
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException ae)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ae.Message);
         }
         catch (InvalidOperationException io)
         {
@@ -33,11 +33,11 @@ public class OrdersController : ControllerBase
         }
         catch (EntityNotFoundException enfe)
         {
-            return NotFound(enfe.Message);
+            return BadRequest(enfe.Message);
         }
-        catch (DuplicatedEntityException de)
+        catch (DuplicatedEntityException dee)
         {
-            return Conflict(de.Message);
+            return BadRequest(dee.Message);
         }
         catch (Exception ex)
         {

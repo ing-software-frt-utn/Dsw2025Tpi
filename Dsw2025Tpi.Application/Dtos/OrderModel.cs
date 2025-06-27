@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dsw2025Tpi.Domain.Entities;
+using static Dsw2025Tpi.Application.Dtos.OrderItemModel;
 
 namespace Dsw2025Tpi.Application.Dtos
 {
@@ -14,15 +15,16 @@ namespace Dsw2025Tpi.Application.Dtos
             Guid CustomerId,
             string? ShippingAddress,
             string? BillingAddress,
-            List<OrderItem> OrderItems
+            List<OrderItemRequest> OrderItemsRequest
             );
+
         public record OrderResponse
             (
             Guid OrderId,
             Guid CustomerId,
             string? ShippingAddress,
             string? BillingAddress,
-            List<OrderItem> OrderItems,
+            List<OrderItemResponse> OrderItems,
             decimal TotalAmount
             );
     }
