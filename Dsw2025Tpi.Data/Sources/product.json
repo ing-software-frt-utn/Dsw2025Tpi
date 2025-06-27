@@ -1,0 +1,92 @@
+[
+  {
+    "sku": "P001",
+    "internalCode": "INT001",
+    "name": "Mouse inalámbrico",
+    "description": "Mouse ergonómico con conexión Bluetooth",
+    "currentUnitPrice": 25.99,
+    "stockQuantity": 103,
+    "isActive": true
+  },
+  {
+    "sku": "P002",
+    "internalCode": "INT002",
+    "name": "Teclado mecánico",
+    "description": "Teclado RGB con switches Cherry MX",
+    "currentUnitPrice": 89.99,
+    "stockQuantity": 20,
+    "isActive": true
+  },
+  {
+    "sku": "P003",
+    "internalCode": "INT003",
+    "name": "Monitor 24 pulgadas",
+    "description": "Monitor Full HD IPS",
+    "currentUnitPrice": 179.49,
+    "stockQuantity": 135,
+    "isActive": true
+  },
+  {
+    "sku": "P004",
+    "internalCode": "INT004",
+    "name": "Auriculares",
+    "description": "Auriculares con cancelación de ruido",
+    "currentUnitPrice": 49.99,
+    "stockQuantity": 85,
+    "isActive": true
+  },
+  {
+    "sku": "P005",
+    "internalCode": "INT005",
+    "name": "Webcam HD",
+    "description": "Cámara web 1080p",
+    "currentUnitPrice": 35.0,
+    "stockQuantity": 81,
+    "isActive": true
+  },
+  {
+    "sku": "P006",
+    "internalCode": "INT006",
+    "name": "Silla ergonómica",
+    "description": "Silla de oficina ajustable",
+    "currentUnitPrice": 220.0,
+    "stockQuantity": 50,
+    "isActive": true
+  },
+  {
+    "sku": "P007",
+    "internalCode": "INT007",
+    "name": "Laptop 15”",
+    "description": "Notebook con 16 GB RAM y SSD",
+    "currentUnitPrice": 1200.0,
+    "stockQuantity": 34,
+    "isActive": true
+  },
+  {
+    "sku": "P008",
+    "internalCode": "INT008",
+    "name": "Base para notebook",
+    "description": "Base ajustable con ventilador",
+    "currentUnitPrice": 29.99,
+    "stockQuantity": 84,
+    "isActive": true
+  },
+  {
+    "sku": "P009",
+    "internalCode": "INT009",
+    "name": "Disco externo 1TB",
+    "description": "Almacenamiento USB 3.0",
+    "currentUnitPrice": 75.5,
+    "stockQuantity": 80,
+    "isActive": true
+  },
+  {
+    "sku": "P010",
+    "internalCode": "INT010",
+    "name": "Router Wi-Fi",
+    "description": "Router de doble banda",
+    "currentUnitPrice": 58.0,
+    "stockQuantity": 69,
+    "isActive": true
+  }
+]
