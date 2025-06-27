@@ -1,10 +1,12 @@
-﻿namespace Dsw2025Tpi.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public abstract class EntityBase
+namespace Dsw2025Tpi.Domain.Entities
 {
-    protected EntityBase()
+    internal class EntityBase
     {
-        Id = Guid.NewGuid();
     }
-    public Guid Id { get; }
 }
