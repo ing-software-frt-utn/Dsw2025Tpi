@@ -26,5 +26,15 @@ namespace Dsw2025Tpi.Domain.Entities
             StockQuantity = stockQuantity;
             IsActive = true;
         }
+        public bool ValidateStock(int quantity)
+        {
+            return StockQuantity >= quantity;
+        }
+        public void ReduceStock(int quantity)
+        {
+            if (quantity <= 0) throw new InvalidOperationException("La cantidad debe ser mayor que cero.");
+            if (!ValidateStock(quantity)) throw new InvalidOperationException("No hay suficiente stock.");
+            StockQuantity -= quantity;
+        }
     }
 }
