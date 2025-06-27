@@ -2,10 +2,11 @@
 using Dsw2025Ej15.Application.Exceptions;
 using Dsw2025Tpi.Domain.Interfaces;
 using Dsw2025Tpi.Domain.Entities;
+using Dsw2025Tpi.Application.Interfaces;
 
 namespace Dsw2025Ej15.Application.Services;
 
-public class ProductsManagementService
+public class ProductsManagementService : IProductsManagementService
 {
     private readonly IRepository _repository;
 

@@ -1,5 +1,6 @@
 
 using Dsw2025Ej15.Application.Services;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Helpers;
@@ -35,8 +36,8 @@ public class Program
         });
 
         builder.Services.AddScoped<IRepository, EfRepository>();
-        builder.Services.AddTransient<ProductsManagementService>();
-        builder.Services.AddTransient<OrdersManagmentService>();
+        builder.Services.AddTransient<IProductsManagementService, ProductsManagementService>();
+        builder.Services.AddTransient<IOrdersManagmentService, OrdersManagmentService>();
 
         var app = builder.Build();
 
