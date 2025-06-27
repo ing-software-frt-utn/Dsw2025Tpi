@@ -41,7 +41,6 @@ public class Dsw2025TpiContext : DbContext
             eb.HasKey(o => o.Id);
             eb.Property(o => o.ShippingAddress).HasMaxLength(150).IsRequired();
             eb.Property(o => o.BillingAddress).HasMaxLength(150).IsRequired();
-            eb.Property(o => o.OrderItems).IsRequired();
             eb.Property(o => o.CustomerId).IsRequired();
             eb.Property(o => o.DateTime).IsRequired();
             eb.Property(o => o.Notes).HasMaxLength(500);
