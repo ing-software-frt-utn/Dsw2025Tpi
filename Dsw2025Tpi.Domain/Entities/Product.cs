@@ -24,5 +24,7 @@
             StockQuantity = stockQuantity;
             IsActive = true;
         }
+
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }
