@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Dtos;
 
-internal record ProductModel
+public record ProductModel
 {
-    public record Request(string sku, string name, decimal currentUnitPrice, int stockQuantity, string? internalCode, string? description);
+    public record Request(string sku, string internalCode, string name, string? description, decimal currentUnitPrice, int stockQuantity);
 
-    public record Update(string sku, string name, decimal currentUnitPrice, int stockQuantity, string? internalCode, string? description);
+    public record Update(string sku, string internalCode, string name, string? description, decimal currentUnitPrice, int stockQuantity);
 
-    public record Response(Guid Id, string sku, string name, decimal currentUnitPrice, int stockQuantity, bool isActive);
+    public record Response(Guid Id, string sku, string internalCode, string name, string? description, decimal currentUnitPrice, int stockQuantity, bool isActive);
 }

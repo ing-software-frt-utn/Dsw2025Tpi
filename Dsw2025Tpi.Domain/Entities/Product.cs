@@ -28,9 +28,9 @@ public class Product : EntityBase
 
     public new Guid Id { get; set; }
     public string sku { get; set; }
-    public string internalCode { get; set; }
+    public string? internalCode { get; set; }
     public string name { get; set; }
-    public string description { get; set; }
+    public string? description { get; set; }
     public decimal currentUnitPrice { get; set; }
     public int stockQuantity { get; set; }
     public bool isActive { get; set; }
