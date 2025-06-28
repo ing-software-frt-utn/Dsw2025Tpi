@@ -36,7 +36,6 @@ public class Dsw2025TpiContext: DbContext
             entity.Property(o => o.shippingAdress).IsRequired().HasMaxLength(200);
             entity.Property(o => o.billingAdress).IsRequired().HasMaxLength(200);
             entity.Property(o => o.notes).HasMaxLength(500);
-            entity.Property(o => o.totalAmount).HasColumnType("decimal(18,2)");
 
         });
 
@@ -45,8 +44,8 @@ public class Dsw2025TpiContext: DbContext
             entity.ToTable("OrderItems"); // Specify the table name if needed
 
             entity.HasKey(oi => oi.Id);
-            entity.Property(oi => oi.Quantity).IsRequired();
-            entity.Property(oi => oi.Price).HasColumnType("decimal(18,2)");
+            entity.Property(oi => oi.quantity).IsRequired();
+            entity.Property(oi => oi.unitPrice).HasColumnType("decimal(18,2)");
 
         });
 
@@ -55,8 +54,9 @@ public class Dsw2025TpiContext: DbContext
             entity.ToTable("customers");
             entity.HasKey(c => c.Id);
             entity.Property(c => c.Id).HasColumnType("char(36)");
-            entity.Property(c => c.Name).IsRequired().HasMaxLength(100);
-            entity.Property(c => c.Email).IsRequired().HasMaxLength(100);
+            entity.Property(c => c.name).IsRequired().HasMaxLength(100);
+            entity.Property(c => c.email).IsRequired().HasMaxLength(100);
+            entity.Property(c => c.phoneNumber).IsRequired().HasMaxLength(20);
         });
 
         //clase dbContext 1:34 hr

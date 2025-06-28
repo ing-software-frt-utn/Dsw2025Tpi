@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Dtos;
 
-internal record CustomerModel
+public record CustomerModel
 {
     public record Response(Guid Id, string FullName, string Email);
 }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Dsw2025Tpi.Domain.Entities;
 
-namespace Dsw2025Tpi.Domain.Entities
+public abstract class EntityBase
 {
-    internal class EntityBase
+    protected EntityBase()
     {
+        Id = Guid.NewGuid();
     }
+    public Guid Id { get; }
 }

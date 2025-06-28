@@ -8,15 +8,16 @@ namespace Dsw2025Tpi.Domain.Entities;
 
 public class Order : EntityBase
 {
+    public Guid customerId;
+    public Customer customer { get; set; }
+    public OrderStatus status;
+
     public new Guid Id { get; set; }
     public DateTime date { get; set; }
     public string shippingAdress { get; set; }
     public string billingAdress { get; set; }
-    public string notes { get; set; }
-    public decimal totalAmount { get; set; }
+    public string? notes { get; set; }
+    public decimal totalAmount => items.Sum(item => item.unitPrice * item.quantity);
 
-
-    public List<Product> products { get; set; } = new List<Product>();
-    public List<Order> orders { get; set; } = new List<Order>();
-
+    public ICollection<OrderItem> items { get; set; }
 }
