@@ -28,12 +28,12 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetProductById(Guid _id)
+    public async Task<IActionResult> GetProductById(Guid id)
     {
-        var _product = await _service.GetProductById(_id);
+        var _product = await _service.GetProductById(id);
         if (_product == null)
         {
-            return NotFound($"No se encontró el producto con Id {_id}");
+            return NotFound($"No se encontró el producto con Id {id}");
         }
         return Ok(_product);
     }
@@ -62,14 +62,14 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> UpdateProduct(Guid _id, [FromBody] ProductModel.ProductRequest _request)
+    public async Task<IActionResult> DisableProduct(Guid id, [FromBody] ProductModel.ProductRequest _request)
     {
         try
         {
-            var _product = await _service.DeleteProduct(_id);
+            var _product = await _service.DeleteProduct(id);
             if (_product == null)
             {
-                return NotFound($"No se encontró el producto con Id {_id}");
+                return NotFound($"No se encontró el producto con Id {id}");
             }
             return Ok(_product);
         }
@@ -88,11 +88,11 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProductById(Guid _id, [FromBody] ProductModel.ProductRequest _request)
+    public async Task<IActionResult> UpdateProductById(Guid id, [FromBody] ProductModel.ProductRequest _request)
     {
         try
         {
-            var _product = await _service.UpdateProduct(_id, _request);
+            var _product = await _service.UpdateProduct(id, _request);
             return Ok(_product);
         }
         catch (EntityNotFoundException enfe)
@@ -102,6 +102,10 @@ public class ProductsController : ControllerBase
         catch (ArgumentException ae)
         {
             return BadRequest(ae.Message);
+        }
+        catch (DuplicatedEntityException de)
+        {
+            return BadRequest(de.Message);
         }
         catch (Exception ex)
         {

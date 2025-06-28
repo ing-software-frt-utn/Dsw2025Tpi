@@ -13,16 +13,16 @@ public record OrderItemModel
         (
         Guid ProductId,
         int Quantity,
-        string ProductName,
-        string ProductDescription,
+        string Name,
+        string Description,
         decimal UnitPrice
         );
     public record OrderItemResponse
         (
         Guid ProductId,
         int Quantity,
-        string ProductName,
-        string ProductDescription,
+        string Name,
+        string Description,
         decimal UnitPrice
         );
 }

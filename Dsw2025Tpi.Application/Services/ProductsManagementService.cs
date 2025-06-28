@@ -31,9 +31,9 @@ public class ProductsManagementService : IProductsManagementService
 
     public async Task<ProductModel.ProductResponse> AddProduct(ProductModel.ProductRequest _request)
     {
-        if (string.IsNullOrWhiteSpace(_request.Sku) ||
-            string.IsNullOrWhiteSpace(_request.Name) ||
-            _request.CurrentUnitPrice <= 0 || _request.StockQuantity <0)
+        if (string.IsNullOrWhiteSpace(_request.Sku) || string.IsNullOrWhiteSpace(_request.Name) ||
+            string.IsNullOrWhiteSpace(_request.Description) || string.IsNullOrWhiteSpace(_request.InternalCode)
+            || _request.UnitPrice <= 0 || _request.Quantity <0)
         {
             throw new ArgumentException("Valores para el producto no válidos");
         }
@@ -41,7 +41,7 @@ public class ProductsManagementService : IProductsManagementService
         var _exist = await _repository.First<Product>(_p => _p.Sku == _request.Sku);
         if (_exist != null) throw new DuplicatedEntityException($"Ya existe un producto con el Sku {_request.Sku}");
         var _product = new Product(_request.Sku, _request.InternalCode, _request.Name,
-            _request.Description, _request.CurrentUnitPrice, _request.StockQuantity);
+            _request.Description, _request.UnitPrice, _request.Quantity);
         await _repository.Add(_product);
         return new ProductModel.ProductResponse(_product.Id, _product.Sku!, _product.InternalCode!,
             _product.Name!, _product.Description!, _product.CurrentUnitPrice,
@@ -61,18 +61,20 @@ public class ProductsManagementService : IProductsManagementService
     {
         var _product = await _repository.GetById<Product>(_id);
         if (_product == null) throw new EntityNotFoundException($"El producto con Id {_id} no existe");
-        if (string.IsNullOrWhiteSpace(_request.Sku) ||
-            string.IsNullOrWhiteSpace(_request.Name) ||
-            _request.CurrentUnitPrice <= 0 || _request.StockQuantity < 0)
+        if (string.IsNullOrWhiteSpace(_request.Sku) || string.IsNullOrWhiteSpace(_request.Name) ||
+            string.IsNullOrWhiteSpace(_request.Description) || string.IsNullOrWhiteSpace(_request.InternalCode)
+            || _request.UnitPrice <= 0 || _request.Quantity < 0)
         {
             throw new ArgumentException("Valores para el producto no válidos");
         }
+        var _exist = await _repository.First<Product>(_p => _p.Sku == _request.Sku);
+        if (_exist != null) throw new DuplicatedEntityException($"Ya existe un producto con el Sku {_request.Sku}");
         _product.Sku = _request.Sku;
         _product.InternalCode = _request.InternalCode;
         _product.Name = _request.Name;
         _product.Description = _request.Description;
-        _product.CurrentUnitPrice = _request.CurrentUnitPrice;
-        _product.StockQuantity = _request.StockQuantity;
+        _product.CurrentUnitPrice = _request.UnitPrice;
+        _product.StockQuantity = _request.Quantity;
         await _repository.Update(_product);
         return new ProductModel.ProductResponse(_product.Id, _product.Sku!, _product.InternalCode!,
             _product.Name!, _product.Description!, _product.CurrentUnitPrice,
