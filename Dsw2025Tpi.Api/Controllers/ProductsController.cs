@@ -62,7 +62,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> DisableProduct(Guid id, [FromBody] ProductModel.ProductRequest _request)
+    public async Task<IActionResult> DisableProduct(Guid id)
     {
         try
         {
