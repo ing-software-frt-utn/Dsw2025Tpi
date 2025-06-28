@@ -16,6 +16,7 @@ public class ProductsController : ControllerBase
         _service = service;
     }
 
+
     [HttpPost()]
     public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request, CreatedResult createdResult)
     {
@@ -55,4 +56,12 @@ public class ProductsController : ControllerBase
             return Problem("Se produjo un error al actualizar el producto");
         }
     }
+    [HttpGet()]
+    public async Task<IActionResult> GetProducts()
+    {
+        var products = await _service.GetProducts();
+        if (products == null || !products.Any()) return NoContent();
+        return Ok(products);
+    }
+     
 }
