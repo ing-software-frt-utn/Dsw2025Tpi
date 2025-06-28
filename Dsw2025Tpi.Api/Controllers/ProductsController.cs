@@ -17,12 +17,13 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost()]
-    public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
+    public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request, CreatedResult createdResult)
     {
         try
         {
             var product = await _service.AddProduct(request);
-            return Created(product);
+            return CreatedAtAction(nameof());
+
         }
         catch (ArgumentException ae)
         {

@@ -23,5 +23,4 @@ public class Product : EntityBase
     public decimal CurrentUnitPrice { get; set; }
     public int StockQuantity { get; set; }
     public bool IsActive { get; set; }
-    public ICollection<OrderItem> OrderItems { get; } = new HashSet<OrderItem>();
 }
