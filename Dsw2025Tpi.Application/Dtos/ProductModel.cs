@@ -27,5 +27,12 @@ namespace Dsw2025Tpi.Application.Dtos
             decimal CurrentUnitPrice,
             int StockQuantity
         );
+
+        public record UpdateRequest(
+            string Name,
+            string Description,
+            decimal CurrentUnitPrice,
+            int StockQuantity
+        );
     }
 }

@@ -48,14 +48,41 @@ namespace Dsw2025Tpi.Api.Controllers
             return Ok(products); //200
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
-            var product = await _service.GetProductById(id);
+            var product = await _service.GetProductByIdAsync(id);
 
             if(product == null)
                 return NotFound(); //404
             return Ok(product);
+        }
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, ProductModel.UpdateRequest model)
+        {
+            try
+            {
+                var product = await _service.UpdateProductAsync(id, model);
+
+                if(product == null)
+                    return NotFound();
+                return StatusCode(StatusCodes.Status200OK, model);
+
+            }
+            catch(ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+        }
+
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> DisableProduct(Guid id)
+        {
+            var status = await _service.DisableProductAsync(id);
+            if(!status)
+                return NotFound();
+            return NoContent();
         }
     }
 }

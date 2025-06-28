@@ -60,10 +60,14 @@ namespace Dsw2025Tpi.Application.Services
         {
             var products = await _repository.GetAll<Product>();
 
-            if (products == null || !products.Any())
+            var activeProducts = products
+                .Where(p => p.IsActive)
+                .ToList();
+
+            if (!activeProducts.Any())
                 return new List<ProductModel.Response>();
 
-            var productsList = products
+            var productsList = activeProducts
                 .Select(p => new ProductModel.Response(
                     p.Id,
                     p.Sku,
@@ -77,7 +81,7 @@ namespace Dsw2025Tpi.Application.Services
             return productsList;
         }
 
-        public async Task<ProductModel.Response> GetProductById(Guid id)
+        public async Task<ProductModel.Response> GetProductByIdAsync(Guid id)
         {
             var product = await _repository.GetById<Product>(id);
 
@@ -95,5 +99,50 @@ namespace Dsw2025Tpi.Application.Services
                 );
         }
 
+        public async Task<ProductModel.Response> UpdateProductAsync(Guid id, ProductModel.UpdateRequest dto)
+        {
+            var product = await _repository.GetById<Product>(id);
+
+            if (product == null)
+                return null;
+
+            if(string.IsNullOrWhiteSpace(dto.Name) ||
+               dto.CurrentUnitPrice <= 0 ||
+               dto.StockQuantity < 0)
+            {
+                throw new ArgumentException("Datos inválidos para actulizar el producto.");
+            }
+
+            product.Name = dto.Name;
+            product.Description = dto.Description;
+            product.CurrentUnitPrice = dto.CurrentUnitPrice;
+            product.StockQuantity = dto.StockQuantity;
+
+            var update = await _repository.Update<Product>(product);
+
+            return new ProductModel.Response(
+                update.Id,
+                update.Sku,
+                update.InternalCode,
+                update.Name,
+                update.Description,
+                update.CurrentUnitPrice,
+                update.StockQuantity
+            );  
+        }
+
+        public async Task<bool> DisableProductAsync(Guid id)
+        {
+            var product = await _repository.GetById<Product>(id);
+
+            if (product == null)
+                return false;
+
+            product.IsActive = false;
+            await _repository.Update<Product>(product);
+
+            return true;
+        }
+    
     }
 }
