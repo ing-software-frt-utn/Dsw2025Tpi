@@ -35,6 +35,15 @@ public class ProductsController : ControllerBase
             return Problem("Se produjo un error al guardar el producto");
         }
     }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetProducts()
+    {
+        var products = await _service.GetProducts();
+        if (products == null || !products.Any()) return NoContent();
+        return Ok(products);
+    }
+
     [HttpPost("{id}")]
     public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
     {
@@ -56,12 +65,6 @@ public class ProductsController : ControllerBase
             return Problem("Se produjo un error al actualizar el producto");
         }
     }
-    [HttpGet()]
-    public async Task<IActionResult> GetProducts()
-    {
-        var products = await _service.GetProducts();
-        if (products == null || !products.Any()) return NoContent();
-        return Ok(products);
-    }
+    
      
 }

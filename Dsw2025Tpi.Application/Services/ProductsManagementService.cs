@@ -33,16 +33,16 @@ public class ProductsManagementService
 
     public async Task<ProductModel.Response> AddProduct(ProductModel.Request request)
     {
-        if (string.IsNullOrWhiteSpace(request.Sku) || 
-            string.IsNullOrWhiteSpace(request.Name) ||
-            request.Price < 0)
-        {
-            throw new ArgumentException("Valores para el producto no válidos");
-        }
-
+        if(string.IsNullOrWhiteSpace(request.Sku)) throw new ArgumentException("Valor del Sku para el producto no válido");
+        if(string.IsNullOrWhiteSpace(request.Description)) throw new ArgumentException("Valor para la descripcion del producto no válida");
+        if(string.IsNullOrWhiteSpace(request.Name)) throw new ArgumentException("Valor para el nombre del producto no válido");
+        if(string.IsNullOrWhiteSpace(request.InternalCode)) throw new ArgumentException("Valor para el Internal Code para el producto no válidos");
+        if(request.StockQuantity < 1) throw new ArgumentException("Valor para el Stock del producto no válido");
+        if(request.Price < 0) throw new ArgumentException("Valor para el precio del producto no válido");
+        
         var exist = await _repository.First<Product>(p => p.Sku == request.Sku);
         if (exist != null) throw new DuplicatedEntityException($"Ya existe un producto con el Sku {request.Sku}");
-        var product = new Product(request.Sku, request.Name, request.Price);
+        var product = new Product(request.Sku, request.InternalCode, request.Name,request.Description, request.Price,request.StockQuantity);
         await _repository.Add(product);
         return new ProductModel.Response(product.Id, product.Sku, product.Name,
             product.CurrentUnitPrice);
