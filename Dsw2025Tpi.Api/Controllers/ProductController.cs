@@ -1,8 +1,10 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Dsw2025Tpi.Api.Controllers
 {
@@ -17,22 +19,8 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> addProduct([FromBody]ProductModel.request objeto)
         {
-            try
-            {
                 var producto = await _service.AddProduct(objeto);
-                return CreatedAtAction(nameof(GetProductById), new { id = producto.id},producto);
-            }
-            catch (ArgumentException e) {
-                return BadRequest(e.Message);
-            
-            }
-            catch (Exception)
-            {
-                return Problem("se produjo un error al agregar el producto");
-            }
-
-
-
+                return CreatedAtAction(nameof(GetProductById), new { id = producto.Id},producto);
         }
         [HttpGet]
         public async Task <IActionResult> getProducts() { 
@@ -45,7 +33,6 @@ namespace Dsw2025Tpi.Api.Controllers
         public async Task<IActionResult> GetProductById(Guid id)
         { 
             var producto = await _service.GetProductById(id);
-            if(producto is null) return NotFound();
 
             return Ok(producto);
         }
@@ -53,19 +40,13 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody]ProductModel.request productoActualizado) 
         {
-            if (string.IsNullOrWhiteSpace(productoActualizado.name) ||
-                 string.IsNullOrWhiteSpace(productoActualizado.sku) ||
-                 string.IsNullOrWhiteSpace(productoActualizado.internalCode) ||
-                   productoActualizado.currentUnitPrice < 0) return BadRequest("los datos enviados no son válidos.");
             var producto= await _service.UpdateProduct(id, productoActualizado);
-            if (producto is null) return NotFound("no se encuentra un producto con el ID proporcionado.");
-
            return Ok(producto);
         }
         [HttpPatch("{id}")]
         public async Task<IActionResult> DisableProduct(Guid id)
         {
-            if(!(await _service.DisableProduct(id)))return NotFound("no se encuentra un producto con el ID proporcionado.");
+            _service.DisableProduct(id);
             return NoContent();
         }
 

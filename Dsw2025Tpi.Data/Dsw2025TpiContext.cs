@@ -42,13 +42,80 @@ public class Dsw2025TpiContext: DbContext
             eb.Property(p => p._currentUnitPrice)
             .HasPrecision(15, 2);
 
-            
+        
 
 
+        });
+        modelBuilder.Entity<Customer>(eb => {
+            eb.ToTable("Customers");
+            eb.HasKey(p => p.Id);
+
+            eb.Property(c => c._name)
+               .HasMaxLength(100)
+               .IsRequired();
+
+            eb.Property(c => c._email)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            eb.Property(c => c._phoneNumber)
+                .HasMaxLength(20);
+
+            // Índice único para email
+            eb.HasIndex(c => c._email)
+                .IsUnique();
+
+        });
+        modelBuilder.Entity<Order>(eb => {
+            eb.ToTable("Orders");
+            eb.HasKey(p => p.Id);
+
+            eb.HasOne<Customer>()// relacion muchos a uno
+            .WithMany()
+            .HasForeignKey(o => o._customerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            eb.Property(o => o._shippingAddress)
+               .HasMaxLength(500)
+               .IsRequired();
+
+            eb.Property(o => o._billingAddress)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            eb.Property(o => o._notes)
+                .HasMaxLength(1000); 
+
+            eb.Property(o => o._totalAmount)
+                .HasPrecision(18, 2); 
+
+            eb.Property(o => o._status)
+                .HasConversion<string>() // Guarda el enum como string
+                .HasMaxLength(50);
 
 
 
         });
+        modelBuilder.Entity<OrderItem>(eb => {
+            eb.ToTable("OrderItems");
+            eb.HasKey(p => p.Id);
+
+            eb.HasOne<Order>()
+            .WithMany()
+            .HasForeignKey(o => o._orderId);
+
+            eb.HasOne<Product>()
+            .WithMany()
+            .HasForeignKey(o => o._productId);
+
+            eb.Property(oi => oi._unitPrice)
+                .HasPrecision(18, 2);
+
+            eb.Property(oi => oi._subtotal)
+                .HasPrecision(18, 2);
+
+        });
+
 
     }
 
