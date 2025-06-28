@@ -8,8 +8,8 @@ public record ProductModel
         string InternalCode,
         string Name,
         string Description,
-        decimal UnitPrice,
-        int Quantity
+        decimal CurrentUnitPrice,
+        int StockQuantity
         );
 
     public record ProductResponse
@@ -19,8 +19,8 @@ public record ProductModel
         string InternalCode,
         string Name,
         string Description,
-        decimal UnitPrice,
-        int Quantity,
+        decimal CurrentUnitPrice,
+        int StockQuantity,
         bool IsActive
         );
 }

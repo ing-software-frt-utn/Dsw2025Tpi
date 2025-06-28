@@ -32,7 +32,7 @@ namespace Dsw2025Tpi.Application.Services
             var _orderItemsResponses = new List<OrderItemResponse>();
             var _orderItems = new List<OrderItem>();
 
-            foreach (var _item in _request.OrderItemsRequest)
+            foreach (var _item in _request.OrderItems)
             {
                 var _product = await _repository.GetById<Product>(_item.ProductId);
                 if (_product == null)

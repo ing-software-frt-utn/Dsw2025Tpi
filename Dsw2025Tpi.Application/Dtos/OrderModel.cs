@@ -15,7 +15,7 @@ public record OrderModel
         Guid CustomerId,
         string? ShippingAddress,
         string? BillingAddress,
-        List<OrderItemRequest> OrderItemsRequest
+        List<OrderItemRequest> OrderItems
         );
 
     public record OrderResponse
