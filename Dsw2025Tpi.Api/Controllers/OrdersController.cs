@@ -42,7 +42,7 @@ public class OrdersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return Problem($"{ex.Message} --- INNER: {ex.InnerException?.Message}");
+            return Problem(ex.Message);
         }
     }
 }
