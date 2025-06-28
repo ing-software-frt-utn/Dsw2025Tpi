@@ -1,4 +1,5 @@
 
+using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Repositories;
 using Dsw2025Tpi.Domain.Interfaces;
@@ -12,10 +13,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddHealthChecks();
@@ -26,6 +24,10 @@ public class Program
         });
 
         builder.Services.AddScoped<IRepository, EfRepository>();
+
+        builder.Services.AddScoped<ProductsManagmentService>();
+
+        builder.Services.AddControllers();
 
         var app = builder.Build();
 
