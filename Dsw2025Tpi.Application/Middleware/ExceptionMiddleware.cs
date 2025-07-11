@@ -60,8 +60,12 @@ namespace Dsw2025Tpi.Application.Middleware
                     message = exception.Message;
                     break;
 
-                case NullPriceException:
+                case IncorrectPriceException:
                     statusCode = HttpStatusCode.BadRequest; // 400 Bad Request
+                    message = exception.Message;
+                    break;
+                case NoContentException:
+                    statusCode = HttpStatusCode.NoContent; // 404 Not Found
                     message = exception.Message;
                     break;
 

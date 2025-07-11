@@ -25,7 +25,6 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpGet]
         public async Task <IActionResult> getProducts() { 
         var productos= await _service.GetProducts();
-            if(productos is null) return NoContent();
             return Ok(productos);
         }
 

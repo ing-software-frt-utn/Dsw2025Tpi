@@ -22,7 +22,7 @@ namespace Dsw2025Tpi.Application.Services
 
         public async Task<List<Product>?> GetProducts() {
           var product =  await _repository.GetAll<Product>(); 
-        if(product is null) throw new NotFoundEntityException("no se encontraron productos");
+        if(product is null) throw new NoContentException("no se encontraron productos");
             return product.ToList();
         }
 
@@ -31,7 +31,7 @@ namespace Dsw2025Tpi.Application.Services
 
             if (objeto.currentUnitPrice <= 0)
             {
-                throw new NullPriceException("Precio menor o igual a cero");
+                throw new IncorrectPriceException("Precio menor o igual a cero");
             }
 
             if (string.IsNullOrWhiteSpace(objeto.name) ||
@@ -65,7 +65,7 @@ namespace Dsw2025Tpi.Application.Services
         public async Task<Product?> UpdateProduct(Guid id,ProductModel.request productoActualizado) {
             if (productoActualizado.currentUnitPrice <= 0)
             {
-                throw new NullPriceException("Precio menor o igual a cero");
+                throw new IncorrectPriceException("Precio menor o igual a cero");
             }
 
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Application.Services
 {
@@ -27,36 +28,34 @@ namespace Dsw2025Tpi.Application.Services
                 (await _repository.GetById<Customer>(objeto.CustomerId)) is null
                 )
             {
-                
-                    return null; 
+
+                throw new ArgumentException("valores incompletos");
             }
             
 
+            this.ExistsProducts(objeto.OrderItems);
 
             var items = new List<OrderItem>();
             var itemsResponse = new List<OrderItemModel.CreateOrderItemResponse>();
             var productosActualizados = new List<Product>();
-
-            var orden = new Order(objeto.CustomerId,objeto.ShippingAddress, objeto.ShippingAddress, objeto.Notes);
-
+            var orden = new Order(objeto.CustomerId, objeto.ShippingAddress, objeto.ShippingAddress, objeto.Notes);
 
             foreach (var item in objeto.OrderItems) 
             {
                 var producto = await _repository.GetById<Product>(item.ProductId);
                 if ( producto is null|| producto._stockQuantity<= item.Quantity) 
                 {
-                return null;
+                throw new ArgumentException("valores incompletos en productos"); ;
                 }
                 items.Add(new OrderItem(orden.Id,item.ProductId,producto,item.Quantity,item.currentUnitPrice));
                 itemsResponse.Add(new OrderItemModel.CreateOrderItemResponse(item.ProductId, item.Quantity, producto._description, item.currentUnitPrice));
                 producto._stockQuantity -= item.Quantity;
-                productosActualizados.Add(producto);
+                await _repository.Update(producto);
+    
             }
 
 
             orden.setOrderItems(items);
-
-            this.UpdateProducts(productosActualizados);
 
 
             await _repository.Add(orden);
@@ -64,13 +63,16 @@ namespace Dsw2025Tpi.Application.Services
 
         }
 
-        public async void UpdateProducts(List <Product> lista)
-        {
-            foreach (var producto in lista)
+      
+        public async void ExistsProducts(List<OrderItemModel.CreateOrderItemRequest> lista) {
+            foreach (var item in lista)
             {
-                await _repository.Update(producto);
+                var producto = await _repository.GetById<Product>(item.ProductId);
+                if (producto is null|| item.Quantity<0 || producto._stockQuantity < item.Quantity|| !(producto._isActive))
+                {
+                    throw new ArgumentException("valores incompletos o erroneos en productos"); ;
+                }
             }
-
         }
         public async Task<Order?> GetProductById(Guid id) => await _repository.GetById<Order>(id);
 

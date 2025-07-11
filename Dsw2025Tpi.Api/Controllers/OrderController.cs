@@ -20,20 +20,10 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrder([FromBody] OrderModel.CreateOrderRequest objeto)
         {
-            try
-            {
-                var order = await _service.AddOrder(objeto);
-                if (order is null) return BadRequest("Invalid order data.");
-                return CreatedAtAction(nameof(GetOrderById), new {id=order.id}, order);
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("An error occurred while adding the order.");
-            }
+            var order = await _service.AddOrder(objeto);
+         
+            return CreatedAtAction(nameof(GetOrderById), new {id=order.id}, order);
+        
         }
 
 
