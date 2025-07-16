@@ -19,27 +19,27 @@ public class Dsw2025TpiContext: DbContext
             //.IsUnique();
             eb.HasKey(p => p.Id);
 
-            eb.Property(p => p.internalCode)
+            eb.Property(p => p.InternalCode)
             .HasMaxLength(50)
             .IsRequired();
 
 
-            eb.Property(p => p.sku)
+            eb.Property(p => p.Sku)
             .HasMaxLength(50)
             .IsRequired();
 
 
-            eb.Property(p => p.name)
+            eb.Property(p => p.Name)
             .HasMaxLength(50)
             .IsRequired();
 
 
 
-            eb.Property(p => p.description)
+            eb.Property(p => p.Description)
             .HasMaxLength(100);
 
 
-            eb.Property(p => p.currentUnitPrice)
+            eb.Property(p => p.CurrentUnitPrice)
             .HasPrecision(15, 2);
 
         
@@ -50,19 +50,19 @@ public class Dsw2025TpiContext: DbContext
             eb.ToTable("Customers");
             eb.HasKey(p => p.Id);
 
-            eb.Property(c => c.name)
+            eb.Property(c => c.Name)
                .HasMaxLength(100)
                .IsRequired();
 
-            eb.Property(c => c.email)
+            eb.Property(c => c.Email)
                 .HasMaxLength(255)
                 .IsRequired();
 
-            eb.Property(c => c.phoneNumber)
+            eb.Property(c => c.PhoneNumber)
                 .HasMaxLength(20);
 
             // Índice único para email
-            eb.HasIndex(c => c.email)
+            eb.HasIndex(c => c.Email)
                 .IsUnique();
 
         });
@@ -72,23 +72,23 @@ public class Dsw2025TpiContext: DbContext
 
             eb.HasOne<Customer>()// relacion muchos a uno
             .WithMany()
-            .HasForeignKey(o => o.customerId)
+            .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
 
-            eb.Property(o => o.shippingAddress)
+            eb.Property(o => o.ShippingAddress)
                .HasMaxLength(500)
                .IsRequired();
 
-            eb.Property(o => o.billingAddress)
+            eb.Property(o => o.BillingAddress)
                 .HasMaxLength(500)
                 .IsRequired();
 
-            eb.Property(o => o.notes)
+            eb.Property(o => o.Notes)
                 .HasMaxLength(1000);
 
-            eb.Ignore(o => o.totalAmount); 
+            eb.Ignore(o => o.TotalAmount); 
 
-            eb.Property(o => o.status)
+            eb.Property(o => o.Status)
                 .HasConversion<string>() // Guarda el enum como string
                 .HasMaxLength(50);
 
@@ -99,18 +99,27 @@ public class Dsw2025TpiContext: DbContext
             eb.ToTable("OrderItems");
             eb.HasKey(p => p.Id);
 
+            // Solo si Order.Id y OrderItem.OrderId son del mismo tipo
+            /* eb.HasOne<Order>()
+                 .WithMany()
+                 .HasForeignKey(oi => oi.OrderId)
+                 .HasPrincipalKey(o => o.Id);  // Especificar la clave principal
+            */
             eb.HasOne<Order>()
-            .WithMany()
-            .HasForeignKey(o => o.orderId);
+         .WithMany(o => o.OrderItems)  // Especificar la lista explícitamente
+         .HasForeignKey(oi => oi.OrderId);
+
 
             eb.HasOne<Product>()
-            .WithMany()
-            .HasForeignKey(o => o.productId);
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId)
+                .HasPrincipalKey(p => p.Id);
 
-            eb.Property(oi => oi.unitPrice)
+
+            eb.Property(oi => oi.UnitPrice)
                 .HasPrecision(18, 2);
 
-            eb.Ignore(oi => oi.subtotal); // Ignorar subtotal, se calcula en tiempo de ejecución
+            eb.Ignore(oi => oi.Subtotal); // Ignorar subtotal, se calcula en tiempo de ejecución
 
         });
 

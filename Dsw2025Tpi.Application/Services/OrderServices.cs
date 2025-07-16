@@ -37,7 +37,7 @@ namespace Dsw2025Tpi.Application.Services
                 throw new NotFoundEntityException($"cliente con ID{request.customerId} no encontrado");
             }
 
-            ValidationProducts(request.orderItems);
+     
 
             var items = new List<OrderItem>();
             var itemsResponse = new List<OrderItemModel.ResponseOrderItem>();
@@ -46,10 +46,13 @@ namespace Dsw2025Tpi.Application.Services
             foreach (var item in request.orderItems) 
             {
                 var producto = await _repository.GetById<Product>(item.productId);
-              
+                if (producto is null || item.quantity < 0 || producto.StockQuantity < item.quantity || !(producto.IsActive))
+                {
+                    throw new ArgumentException("valores incompletos o erroneos en productos"); ;
+                }
                 items.Add(new OrderItem(orden.Id,item.productId,producto,item.quantity,item.currentUnitPrice));
-                itemsResponse.Add(new OrderItemModel.ResponseOrderItem(item.productId, item.quantity, producto.description, item.currentUnitPrice,item.quantity*item.currentUnitPrice));
-                producto.stockQuantity -= item.quantity;
+                itemsResponse.Add(new OrderItemModel.ResponseOrderItem(item.productId, item.quantity, producto.Description, item.currentUnitPrice,item.quantity*item.currentUnitPrice));
+                producto.StockQuantity -= item.quantity;
                 await _repository.Update(producto);
     
             }
@@ -59,7 +62,7 @@ namespace Dsw2025Tpi.Application.Services
 
 
             await _repository.Add(orden);
-            return new OrderModel.ResponseOrder(orden.Id,orden.customerId,orden.date,orden.shippingAddress,orden.billingAddress,orden.notes,orden.date,orden.totalAmount,orden.status,itemsResponse);
+            return new OrderModel.ResponseOrder(orden.Id,orden.CustomerId,orden.Date,orden.ShippingAddress,orden.BillingAddress,orden.Notes,orden.Date,orden.TotalAmount,orden.Status,itemsResponse);
 
         }
 
@@ -68,7 +71,7 @@ namespace Dsw2025Tpi.Application.Services
             foreach (var item in lista)
             {
                 var producto = await _repository.GetById<Product>(item.productId);
-                if (producto is null|| item.quantity<0 || producto.stockQuantity < item.quantity|| !(producto.isActive))
+                if (producto is null|| item.quantity<0 || producto.StockQuantity < item.quantity|| !(producto.IsActive))
                 {
                     throw new ArgumentException("valores incompletos o erroneos en productos"); ;
                 }

@@ -46,8 +46,8 @@ public class Program
                 context.Database.EnsureCreatedAsync();
 
                 // Solo esta línea para Customer
-                context.InicializateJson<Customer, CustomerModel.request>("D:\\Facultad\\3er nivel\\DSW\\TPI\\Dsw2025Tpi\\Dsw2025Tpi.Application\\Dtos\\Customers.json",
-                    dto => new Customer(dto.Name, dto.Email, dto.PhoneNumber));
+                context.InicializateJson<Customer, CustomerModel.RequestCustomer>("D:\\Facultad\\3er nivel\\DSW\\TPI\\Dsw2025Tpi\\Dsw2025Tpi.Application\\Dtos\\Customers.json",
+                    dto => new Customer(dto.name, dto.email, dto.phoneNumber));
             }
             catch (Exception ex)
             {

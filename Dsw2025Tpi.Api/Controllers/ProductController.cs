@@ -45,7 +45,7 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> DisableProduct(Guid id)
         {
-            _service.DisableProduct(id);
+            await _service.DisableProduct(id);
             return NoContent();
         }
 

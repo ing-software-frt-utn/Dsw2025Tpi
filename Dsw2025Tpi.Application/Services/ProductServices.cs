@@ -34,6 +34,11 @@ namespace Dsw2025Tpi.Application.Services
                 throw new IncorrectPriceException("Precio menor o igual a cero");
             }
 
+            if (request.stockQuantity < 0)
+            {
+                throw new ArgumentException("el stock no puede ser negativo");
+            }
+
             if (string.IsNullOrWhiteSpace(request.name) ||
                   string.IsNullOrWhiteSpace(request.sku) ||
                   string.IsNullOrWhiteSpace(request.internalCode)
@@ -41,10 +46,10 @@ namespace Dsw2025Tpi.Application.Services
             {
                 throw new ArgumentException("valores incompletos");
             }
-            var existenciaSku = await _repository.First<Product>(P => P.sku == request.sku);
+            var existenciaSku = await _repository.First<Product>(P => P.Sku == request.sku);
             if (existenciaSku is not null) throw new DuplicatedEntityException("ya existe un producto con ese sku");
 
-            var existenciaIC = await _repository.First<Product>(P => P.internalCode == request.internalCode);
+            var existenciaIC = await _repository.First<Product>(P => P.InternalCode == request.internalCode);
             if (existenciaIC is not null) throw new DuplicatedEntityException("ya existe un producto con ese internalCode");
 
 
@@ -67,6 +72,10 @@ namespace Dsw2025Tpi.Application.Services
             {
                 throw new IncorrectPriceException("Precio menor o igual a cero");
             }
+            if (request.stockQuantity< 0)
+            {
+                throw new IncorrectPriceException("el stock no puede ser negativo");
+            }
 
 
             if (string.IsNullOrWhiteSpace(request.name) ||
@@ -81,24 +90,26 @@ namespace Dsw2025Tpi.Application.Services
 
             if (producto is null) throw new NotFoundEntityException("no se econtro el producto");
 
-            producto.sku= request.sku;
-            producto.internalCode = request.internalCode;
-            producto.name = request.name;
-            producto.description = request.description;
-            producto.currentUnitPrice = request.currentUnitPrice;
-            producto.stockQuantity = request.stockQuantity;
+            producto.Sku= request.sku;
+            producto.InternalCode = request.internalCode;
+            producto.Name = request.name;
+            producto.Description = request.description;
+            producto.CurrentUnitPrice = request.currentUnitPrice;
+            producto.StockQuantity = request.stockQuantity;
 
             await _repository.Update(producto);
 
             return producto;
         }
 
-        public async void DisableProduct(Guid id)
+        public async Task<bool> DisableProduct(Guid id)
         {
             var producto = await _repository.GetById<Product>(id);
             if (producto is null) throw new NotFoundEntityException("no se econtro el producto");
-            producto.isActive = false;
+            if(producto.IsActive is false) throw new ArgumentException("el producto ya se encuentra deshabilitado");
+            producto.IsActive = false;
             await _repository.Update(producto);
+            return true;
         }
 
 

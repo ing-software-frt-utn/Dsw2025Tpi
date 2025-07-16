@@ -8,26 +8,26 @@ namespace Dsw2025Tpi.Domain.Entities
 {
     public class OrderItem:EntityBase
     {
-        public Guid orderId { get; set; }
-        
-       // public Order _order { get; set; }
+        public Guid OrderId { get; set; }
+       
+     //  public Order Order { get; set; }
 
-        public Guid productId { get; set; }
-       // public Product _product { get; set; }
+        public Guid ProductId { get; set; }
+       //public Product Product { get; set; }
 
-        public int quantity { get; set; }
-        public decimal unitPrice { get; set; }
+        public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
 
-        public decimal subtotal=> quantity * unitPrice;
+        public decimal Subtotal=> Quantity * UnitPrice;
 
-        public OrderItem(Guid OrderId,Guid ProductId, Product Product, int Quantity, decimal UnitPrice)
+        public OrderItem(Guid orderId,Guid productId, Product product, int quantity, decimal unitPrice)
         {
-            orderId = OrderId;
-           // _order = order;
-            productId = ProductId;
+            OrderId=orderId ;
+            // _order = order;
+            ProductId= productId;
            // _product = product;
-            quantity = Quantity;
-            unitPrice = UnitPrice;
+            Quantity = quantity;
+            UnitPrice = unitPrice;
         }
 
         public OrderItem() { }
