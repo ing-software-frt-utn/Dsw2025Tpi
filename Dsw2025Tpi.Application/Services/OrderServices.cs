@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -20,36 +21,35 @@ namespace Dsw2025Tpi.Application.Services
             _repository = repository;
         }
 
-        public async Task<OrderModel.CreateOrderResponse?> AddOrder(OrderModel.CreateOrderRequest objeto)
+        public async Task<OrderModel.ResponseOrder> AddOrder(OrderModel.RequestOrder request)
         {
-            if (string.IsNullOrWhiteSpace(objeto.ShippingAddress)||
-                string.IsNullOrWhiteSpace(objeto.BillingAddress)||
-                !objeto.OrderItems.Any()||
-                (await _repository.GetById<Customer>(objeto.CustomerId)) is null
-                )
+            if (string.IsNullOrWhiteSpace(request.shippingAddress)||
+                string.IsNullOrWhiteSpace(request.billingAddress)||
+                !request.orderItems.Any())
             {
 
                 throw new ArgumentException("valores incompletos");
             }
-            
 
-            this.ExistsProducts(objeto.OrderItems);
+            var customer = await _repository.GetById<Customer>(request.customerId);
+            if (customer is null)
+            {
+                throw new NotFoundEntityException($"cliente con ID{request.customerId} no encontrado");
+            }
+
+            ValidationProducts(request.orderItems);
 
             var items = new List<OrderItem>();
-            var itemsResponse = new List<OrderItemModel.CreateOrderItemResponse>();
-            var productosActualizados = new List<Product>();
-            var orden = new Order(objeto.CustomerId, objeto.ShippingAddress, objeto.ShippingAddress, objeto.Notes);
+            var itemsResponse = new List<OrderItemModel.ResponseOrderItem>();
+            var orden = new Order(request.customerId, request.shippingAddress, request.billingAddress, request.notes);
 
-            foreach (var item in objeto.OrderItems) 
+            foreach (var item in request.orderItems) 
             {
-                var producto = await _repository.GetById<Product>(item.ProductId);
-                if ( producto is null|| producto._stockQuantity<= item.Quantity) 
-                {
-                throw new ArgumentException("valores incompletos en productos"); ;
-                }
-                items.Add(new OrderItem(orden.Id,item.ProductId,producto,item.Quantity,item.currentUnitPrice));
-                itemsResponse.Add(new OrderItemModel.CreateOrderItemResponse(item.ProductId, item.Quantity, producto._description, item.currentUnitPrice));
-                producto._stockQuantity -= item.Quantity;
+                var producto = await _repository.GetById<Product>(item.productId);
+              
+                items.Add(new OrderItem(orden.Id,item.productId,producto,item.quantity,item.currentUnitPrice));
+                itemsResponse.Add(new OrderItemModel.ResponseOrderItem(item.productId, item.quantity, producto.description, item.currentUnitPrice,item.quantity*item.currentUnitPrice));
+                producto.stockQuantity -= item.quantity;
                 await _repository.Update(producto);
     
             }
@@ -59,21 +59,22 @@ namespace Dsw2025Tpi.Application.Services
 
 
             await _repository.Add(orden);
-            return new OrderModel.CreateOrderResponse(orden.Id,orden._customerId,orden._date,orden._shippingAddress,orden._billingAddress,orden._notes,orden._status,itemsResponse);
+            return new OrderModel.ResponseOrder(orden.Id,orden.customerId,orden.date,orden.shippingAddress,orden.billingAddress,orden.notes,orden.date,orden.totalAmount,orden.status,itemsResponse);
 
         }
 
       
-        public async void ExistsProducts(List<OrderItemModel.CreateOrderItemRequest> lista) {
+        public async void ValidationProducts(List<OrderItemModel.RequestOrderItem> lista) {
             foreach (var item in lista)
             {
-                var producto = await _repository.GetById<Product>(item.ProductId);
-                if (producto is null|| item.Quantity<0 || producto._stockQuantity < item.Quantity|| !(producto._isActive))
+                var producto = await _repository.GetById<Product>(item.productId);
+                if (producto is null|| item.quantity<0 || producto.stockQuantity < item.quantity|| !(producto.isActive))
                 {
                     throw new ArgumentException("valores incompletos o erroneos en productos"); ;
                 }
             }
         }
+      
         public async Task<Order?> GetProductById(Guid id) => await _repository.GetById<Order>(id);
 
 

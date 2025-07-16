@@ -9,30 +9,30 @@ namespace Dsw2025Tpi.Domain.Entities
     public class Product:EntityBase
     {
 
-        public Product(string sku, string internalCode, string name, string description,
-                 decimal currentUnitPrice, int stockQuantity)
+        public Product(string Sku, string InternalCode, string Name, string Description,
+                 decimal CurrentUnitPrice, int StockQuantity)
         {
-            _sku = sku;
-            _internalCode = internalCode;
-            _name = name;
-            _description = description;
-            _currentUnitPrice = currentUnitPrice;
-            _stockQuantity = stockQuantity;
-            _isActive = true;
+            sku = Sku;
+            internalCode = InternalCode;
+            name = Name;
+            description = Description;
+            currentUnitPrice = CurrentUnitPrice;
+            stockQuantity = StockQuantity;
+            isActive = true;
         }
 
-        public string _sku { get; set; }
-        public string _internalCode { get; set; }
+        public string? sku { get; set; }
+        public string internalCode { get; set; }
 
-        public string _name { get; set; }
+        public string name { get; set; }
 
-        public string _description { get; set; }
+        public string description { get; set; }
 
-        public decimal _currentUnitPrice { get; set; }
+        public decimal currentUnitPrice { get; set; }
 
-        public int _stockQuantity { get; set; }
+        public int stockQuantity { get; set; }
 
-        public bool _isActive { get; set; }
+        public bool isActive { get; set; }
 
 
     }

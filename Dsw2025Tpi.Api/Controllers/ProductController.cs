@@ -15,9 +15,9 @@ namespace Dsw2025Tpi.Api.Controllers
         private readonly ProductServices _service;
         public ProductController(ProductServices servicio) => _service = servicio;
 
-        [ProducesResponseType(typeof(ProductModel.response), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProductModel.ResponseProduct), StatusCodes.Status201Created)]
         [HttpPost]
-        public async Task<IActionResult> addProduct([FromBody]ProductModel.request objeto)
+        public async Task<IActionResult> addProduct([FromBody]ProductModel.RequestProduct objeto)
         {
                 var producto = await _service.AddProduct(objeto);
                 return CreatedAtAction(nameof(GetProductById), new { id = producto.Id},producto);
@@ -37,7 +37,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody]ProductModel.request productoActualizado) 
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody]ProductModel.RequestProduct productoActualizado) 
         {
             var producto= await _service.UpdateProduct(id, productoActualizado);
            return Ok(producto);

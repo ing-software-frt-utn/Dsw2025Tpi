@@ -16,9 +16,9 @@ namespace Dsw2025Tpi.Api.Controllers
         public OrderController(OrderServices servicio) => _service = servicio;
 
 
-        [ProducesResponseType(typeof(OrderModel.CreateOrderResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(OrderModel.ResponseOrder), StatusCodes.Status201Created)]
         [HttpPost]
-        public async Task<IActionResult> AddOrder([FromBody] OrderModel.CreateOrderRequest objeto)
+        public async Task<IActionResult> AddOrder([FromBody] OrderModel.RequestOrder objeto)
         {
             var order = await _service.AddOrder(objeto);
          

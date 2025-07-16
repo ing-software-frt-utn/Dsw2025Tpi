@@ -27,28 +27,28 @@ namespace Dsw2025Tpi.Application.Services
         }
 
 
-        public async Task<Product?> AddProduct(ProductModel.request objeto) {
+        public async Task<Product?> AddProduct(ProductModel.RequestProduct request) {
 
-            if (objeto.currentUnitPrice <= 0)
+            if (request.currentUnitPrice <= 0)
             {
                 throw new IncorrectPriceException("Precio menor o igual a cero");
             }
 
-            if (string.IsNullOrWhiteSpace(objeto.name) ||
-                  string.IsNullOrWhiteSpace(objeto.sku) ||
-                  string.IsNullOrWhiteSpace(objeto.internalCode)
+            if (string.IsNullOrWhiteSpace(request.name) ||
+                  string.IsNullOrWhiteSpace(request.sku) ||
+                  string.IsNullOrWhiteSpace(request.internalCode)
                     )
             {
                 throw new ArgumentException("valores incompletos");
             }
-            var existenciaSku = await _repository.First<Product>(P => P._sku == objeto.sku);
+            var existenciaSku = await _repository.First<Product>(P => P.sku == request.sku);
             if (existenciaSku is not null) throw new DuplicatedEntityException("ya existe un producto con ese sku");
 
-            var existenciaIC = await _repository.First<Product>(P => P._internalCode == objeto.internalCode);
+            var existenciaIC = await _repository.First<Product>(P => P.internalCode == request.internalCode);
             if (existenciaIC is not null) throw new DuplicatedEntityException("ya existe un producto con ese internalCode");
 
 
-            var producto = new Product(objeto.sku, objeto.internalCode, objeto.name, objeto.description, objeto.currentUnitPrice, objeto.stockQuantity);
+            var producto = new Product(request.sku, request.internalCode, request.name, request.description, request.currentUnitPrice, request.stockQuantity);
 
 
                 await _repository.Add(producto);
@@ -62,16 +62,16 @@ namespace Dsw2025Tpi.Application.Services
             return product;
         } 
 
-        public async Task<Product?> UpdateProduct(Guid id,ProductModel.request productoActualizado) {
-            if (productoActualizado.currentUnitPrice <= 0)
+        public async Task<Product?> UpdateProduct(Guid id,ProductModel.RequestProduct request) {
+            if (request.currentUnitPrice <= 0)
             {
                 throw new IncorrectPriceException("Precio menor o igual a cero");
             }
 
 
-            if (string.IsNullOrWhiteSpace(productoActualizado.name) ||
-               string.IsNullOrWhiteSpace(productoActualizado.sku) ||
-               string.IsNullOrWhiteSpace(productoActualizado.internalCode) 
+            if (string.IsNullOrWhiteSpace(request.name) ||
+               string.IsNullOrWhiteSpace(request.sku) ||
+               string.IsNullOrWhiteSpace(request.internalCode) 
                 ) throw new ArgumentException("valores incompletos");
            
             
@@ -81,12 +81,12 @@ namespace Dsw2025Tpi.Application.Services
 
             if (producto is null) throw new NotFoundEntityException("no se econtro el producto");
 
-            producto._sku= productoActualizado.sku;
-            producto._internalCode = productoActualizado.internalCode;
-            producto._name = productoActualizado.name;
-            producto._description = productoActualizado.description;
-            producto._currentUnitPrice = productoActualizado.currentUnitPrice;
-            producto._stockQuantity = productoActualizado.stockQuantity;
+            producto.sku= request.sku;
+            producto.internalCode = request.internalCode;
+            producto.name = request.name;
+            producto.description = request.description;
+            producto.currentUnitPrice = request.currentUnitPrice;
+            producto.stockQuantity = request.stockQuantity;
 
             await _repository.Update(producto);
 
@@ -97,7 +97,7 @@ namespace Dsw2025Tpi.Application.Services
         {
             var producto = await _repository.GetById<Product>(id);
             if (producto is null) throw new NotFoundEntityException("no se econtro el producto");
-            producto._isActive = false;
+            producto.isActive = false;
             await _repository.Update(producto);
         }
 
