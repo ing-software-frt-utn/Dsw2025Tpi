@@ -7,6 +7,7 @@ using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Application.Services
@@ -80,7 +81,30 @@ namespace Dsw2025Tpi.Application.Services
       
         public async Task<Order?> GetProductById(Guid id) => await _repository.GetById<Order>(id);
 
+        public async Task<IEnumerable<Order>> GetFilteredOrders(string? status, Guid? customerId)
+        {
+            try
+            {
+                var allOrders = await _repository.GetAll<Order>();
 
+                if (!allOrders.Any())
+                    throw new NoContentException("No hay ordenes");
+            
+
+                var filtered = allOrders.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(status))
+                    filtered = filtered.Where(o => o.Status.ToString().Equals(status, StringComparison.OrdinalIgnoreCase));
+
+                if (customerId.HasValue)
+                    filtered = filtered.Where(o => o.CustomerId == customerId.Value);
+
+                return filtered;
+            }
+            catch{
+                throw new InternalServerError("El servidor falló inesperadamente");
+            }
+        }
 
     }
 }

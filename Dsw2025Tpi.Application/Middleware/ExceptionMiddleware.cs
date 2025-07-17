@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Dsw2025Tpi.Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Application.Middleware
 {
@@ -64,8 +65,14 @@ namespace Dsw2025Tpi.Application.Middleware
                     statusCode = HttpStatusCode.BadRequest; // 400 Bad Request
                     message = exception.Message;
                     break;
+
                 case NoContentException:
                     statusCode = HttpStatusCode.NoContent; // 404 Not Found
+                    message = exception.Message;
+                    break;
+
+                case InternalServerError:
+                    statusCode = HttpStatusCode.InternalServerError; //500  Internal Server Error
                     message = exception.Message;
                     break;
 

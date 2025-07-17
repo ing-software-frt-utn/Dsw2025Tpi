@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Exceptions
 {
-    public class NoContentException : Exception
+    public class InternalServerError : Exception
     {
-        public NoContentException(string message) : base(message)
+        public InternalServerError(string message) : base(message)
         {
+
         }
 
     }
 }
+

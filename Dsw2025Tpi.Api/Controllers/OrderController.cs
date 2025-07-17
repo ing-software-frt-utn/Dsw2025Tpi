@@ -3,6 +3,7 @@ using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static Azure.Core.HttpHeader;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -21,9 +22,9 @@ namespace Dsw2025Tpi.Api.Controllers
         public async Task<IActionResult> AddOrder([FromBody] OrderModel.RequestOrder objeto)
         {
             var order = await _service.AddOrder(objeto);
-         
-            return CreatedAtAction(nameof(GetOrderById), new {id=order.id}, order);
-        
+
+            return CreatedAtAction(nameof(GetOrderById), new { id = order.id }, order);
+
         }
 
 
@@ -34,6 +35,20 @@ namespace Dsw2025Tpi.Api.Controllers
             if (orden is null) return NotFound();
 
             return Ok(orden);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOrders(
+        string? status,
+        Guid? customerId)
+
+        {
+                var filteredOrders = await _service.GetFilteredOrders(status, customerId);
+
+                var total = filteredOrders.Count();
+
+
+                return Ok(filteredOrders);
         }
 
     }
