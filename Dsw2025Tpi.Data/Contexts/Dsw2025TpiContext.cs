@@ -1,7 +1,7 @@
 ﻿using Dsw2025Tpi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dsw2025Tpi.Data;
+namespace Dsw2025Tpi.Data.Contexts;
 
 public class Dsw2025TpiContext: DbContext
 {
@@ -9,6 +9,8 @@ public class Dsw2025TpiContext: DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+       // modelBuilder.Ignore<Customer>();
+        
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Product>(eb => {
@@ -46,9 +48,17 @@ public class Dsw2025TpiContext: DbContext
 
 
         });
+
+
+
         modelBuilder.Entity<Customer>(eb => {
             eb.ToTable("Customers");
             eb.HasKey(p => p.Id);
+
+            eb.Property(c => c.UserName)
+                .HasMaxLength(450) // Tamaño estándar de Identity
+                .IsRequired();
+
 
             eb.Property(c => c.Name)
                .HasMaxLength(100)

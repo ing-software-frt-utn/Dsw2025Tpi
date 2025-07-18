@@ -9,9 +9,16 @@ namespace Dsw2025Tpi.Application.Dtos
     public record CustomerModel
     {
         public record RequestCustomer(
-    string name,
-    string email,
-    string phoneNumber
+    string Name,
+    string Email,
+    string PhoneNumber,
+    string? UserId);
+        public record ResponseCustomer(
+            Guid Id,
+            string Name,
+            string Email,
+            string PhoneNumber,
+            string UserId
 );
 
     }
