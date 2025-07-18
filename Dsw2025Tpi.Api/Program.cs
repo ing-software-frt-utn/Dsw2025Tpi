@@ -29,6 +29,7 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
+
            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025Tpi"),
            x=>x.MigrationsAssembly("Dsw2025Tpi.Api")
            )//corregir
@@ -77,9 +78,9 @@ public class Program
             );
         builder.Services.AddHealthChecks();
 
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>(Options =>// configuracion de entity,añadimos el servicio
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>(Options =>// configuracion de entity,aÃ±adimos el servicio
         {
-            Options.Password = new PasswordOptions// parametros para la contraseña
+            Options.Password = new PasswordOptions// parametros para la contraseÃ±a
             {
                 RequiredLength = 8
 
@@ -96,21 +97,21 @@ public class Program
 
         builder.Services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;// establecer esquema de autenticación por defecto
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;// establecer esquema de autenticaciÃ³n por defecto
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
 
         })
             .AddJwtBearer(options =>
             {//para la validacion del token JWT
-                options.TokenValidationParameters = new TokenValidationParameters// establecer parámetros de validación del token
+                options.TokenValidationParameters = new TokenValidationParameters// establecer parÃ¡metros de validaciÃ³n del token
                 {
                     ValidateIssuer = true,// validar el emisor
-                    ValidateAudience = true,// validar el público
-                    ValidateLifetime = true,// validar la duración del token
+                    ValidateAudience = true,// validar el pÃºblico
+                    ValidateLifetime = true,// validar la duraciÃ³n del token
                     ValidateIssuerSigningKey = true,// validar la clave de firma
                     ValidIssuer = jwtConfig["issuer"],// establecer el emisor
-                    ValidAudience = jwtConfig["audience"],// establecer el público
+                    ValidAudience = jwtConfig["audience"],// establecer el pÃºblico
                     IssuerSigningKey = new SymmetricSecurityKey(key) // establecer la clave de firma
 
                 };

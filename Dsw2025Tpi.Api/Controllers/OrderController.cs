@@ -1,9 +1,11 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using static Azure.Core.HttpHeader;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -24,12 +26,13 @@ namespace Dsw2025Tpi.Api.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddOrder([FromBody] OrderModel.RequestOrder objeto)
         {
+
             var user= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var order = await _service.AddOrder(objeto,user);
          
             return CreatedAtAction(nameof(GetOrderById), new {id=order.id}, order);
-        
+    
         }
 
 
@@ -40,6 +43,19 @@ namespace Dsw2025Tpi.Api.Controllers
             if (orden is null) return NotFound();
 
             return Ok(orden);
+        }
+
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpGet]
+        public async Task<IActionResult> GetOrders(
+        OrderStatus? status,
+        Guid? customerId)
+
+        {
+            var Orders = await _service.GetFilteredOrders(status, customerId);
+            if (!Orders.Any()) return NoContent();
+
+            return Ok(Orders);
         }
 
     }
