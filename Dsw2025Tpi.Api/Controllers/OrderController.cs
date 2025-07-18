@@ -2,15 +2,18 @@
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static Azure.Core.HttpHeader;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/orders")]
     public class OrderController : ControllerBase
     {
@@ -20,12 +23,16 @@ namespace Dsw2025Tpi.Api.Controllers
 
         [ProducesResponseType(typeof(OrderModel.ResponseOrder), StatusCodes.Status201Created)]
         [HttpPost]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddOrder([FromBody] OrderModel.RequestOrder objeto)
         {
-            var order = await _service.AddOrder(objeto);
 
-            return CreatedAtAction(nameof(GetOrderById), new { id = order.id }, order);
+            var user= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            var order = await _service.AddOrder(objeto,user);
+         
+            return CreatedAtAction(nameof(GetOrderById), new {id=order.id}, order);
+    
         }
 
 

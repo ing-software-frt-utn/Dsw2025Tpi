@@ -10,14 +10,23 @@ namespace Dsw2025Tpi.Application.Dtos
     public record OrderModel
     {
         public record RequestOrder(
-    Guid customerId,
-    string shippingAddress,
-    string billingAddress,
-    string notes,
-    List<OrderItemModel.RequestOrderItem> orderItems);
+        string shippingAddress,
+        string billingAddress,
+        string notes,
+        List<OrderItemModel.RequestOrderItem> orderItems);
+          
+       /* public record RequestOrder
+        {
+            public string UserId { get; set; }
+            public string ShippingAddress { get; init; }
+            public string BillingAddress { get; init; }
+            public string Notes { get; init; }
+            public List<OrderItemModel.RequestOrderItem> OrderItems { get; init; }
+        }
+       */
         public record ResponseOrder(
              Guid id,
-             Guid customerId,
+             Guid CustomerId,
              DateTime date,
              string shippingAddress,
              string billingAddress,

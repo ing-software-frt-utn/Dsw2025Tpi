@@ -24,7 +24,7 @@ namespace Dsw2025Tpi.Application.Services
             _repository = repository;
         }
 
-        public async Task<OrderModel.ResponseOrder> AddOrder(OrderModel.RequestOrder request)
+        public async Task<OrderModel.ResponseOrder> AddOrder(OrderModel.RequestOrder request,string userName)
         {
             if (string.IsNullOrWhiteSpace(request.shippingAddress) ||
                 string.IsNullOrWhiteSpace(request.billingAddress) ||
@@ -34,17 +34,18 @@ namespace Dsw2025Tpi.Application.Services
                 throw new ArgumentException("valores incompletos");
             }
 
-            var customer = await _repository.GetById<Customer>(request.customerId);
+            var customer = await _repository.First<Customer>(u => u.UserName == userName);
+
             if (customer is null)
             {
-                throw new NotFoundEntityException($"cliente con ID{request.customerId} no encontrado");
+                throw new NotFoundEntityException($"Usuario no encontrado");
             }
 
 
 
             var items = new List<OrderItem>();
             var itemsResponse = new List<OrderItemModel.ResponseOrderItem>();
-            var orden = new Order(request.customerId, request.shippingAddress, request.billingAddress, request.notes);
+            var orden = new Order(customer.Id, request.shippingAddress, request.billingAddress, request.notes);
 
             foreach (var item in request.orderItems)
             {
