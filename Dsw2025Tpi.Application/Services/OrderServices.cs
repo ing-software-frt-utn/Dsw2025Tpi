@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Core;
 using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Domain.Entities;
@@ -24,8 +26,8 @@ namespace Dsw2025Tpi.Application.Services
 
         public async Task<OrderModel.ResponseOrder> AddOrder(OrderModel.RequestOrder request)
         {
-            if (string.IsNullOrWhiteSpace(request.shippingAddress)||
-                string.IsNullOrWhiteSpace(request.billingAddress)||
+            if (string.IsNullOrWhiteSpace(request.shippingAddress) ||
+                string.IsNullOrWhiteSpace(request.billingAddress) ||
                 !request.orderItems.Any())
             {
 
@@ -38,24 +40,24 @@ namespace Dsw2025Tpi.Application.Services
                 throw new NotFoundEntityException($"cliente con ID{request.customerId} no encontrado");
             }
 
-     
+
 
             var items = new List<OrderItem>();
             var itemsResponse = new List<OrderItemModel.ResponseOrderItem>();
             var orden = new Order(request.customerId, request.shippingAddress, request.billingAddress, request.notes);
 
-            foreach (var item in request.orderItems) 
+            foreach (var item in request.orderItems)
             {
                 var producto = await _repository.GetById<Product>(item.productId);
                 if (producto is null || item.quantity < 0 || producto.StockQuantity < item.quantity || !(producto.IsActive))
                 {
-                    throw new ArgumentException("valores incompletos o erroneos en productos"); ;
+                    throw new ArgumentException("valores incompletos o erroneos en productos");
                 }
-                items.Add(new OrderItem(orden.Id,item.productId,producto,item.quantity,item.currentUnitPrice));
-                itemsResponse.Add(new OrderItemModel.ResponseOrderItem(item.productId, item.quantity, producto.Description, item.currentUnitPrice,item.quantity*item.currentUnitPrice));
+                items.Add(new OrderItem(orden.Id, item.productId, producto, item.quantity, item.currentUnitPrice));
+                itemsResponse.Add(new OrderItemModel.ResponseOrderItem(item.productId, item.quantity, producto.Description, item.currentUnitPrice, item.quantity * item.currentUnitPrice));
                 producto.StockQuantity -= item.quantity;
                 await _repository.Update(producto);
-    
+
             }
 
 
@@ -63,46 +65,51 @@ namespace Dsw2025Tpi.Application.Services
 
 
             await _repository.Add(orden);
-            return new OrderModel.ResponseOrder(orden.Id,orden.CustomerId,orden.Date,orden.ShippingAddress,orden.BillingAddress,orden.Notes,orden.Date,orden.TotalAmount,orden.Status,itemsResponse);
+            return new OrderModel.ResponseOrder(orden.Id, orden.CustomerId, orden.Date, orden.ShippingAddress, orden.BillingAddress, orden.Notes, orden.Date, orden.TotalAmount, orden.Status, itemsResponse);
 
         }
 
-      
+
         public async void ValidationProducts(List<OrderItemModel.RequestOrderItem> lista) {
             foreach (var item in lista)
             {
                 var producto = await _repository.GetById<Product>(item.productId);
-                if (producto is null|| item.quantity<0 || producto.StockQuantity < item.quantity|| !(producto.IsActive))
+                if (producto is null || item.quantity < 0 || producto.StockQuantity < item.quantity || !(producto.IsActive))
                 {
-                    throw new ArgumentException("valores incompletos o erroneos en productos"); ;
+                    throw new ArgumentException("valores incompletos o erroneos en productos");
                 }
             }
         }
-      
+
         public async Task<Order?> GetProductById(Guid id) => await _repository.GetById<Order>(id);
 
-        public async Task<IEnumerable<Order>> GetFilteredOrders(string? status, Guid? customerId)
+        public async Task<IEnumerable<Order>> GetFilteredOrders(OrderStatus? status, Guid? customerId)
         {
-            try
-            {
-                var allOrders = await _repository.GetAll<Order>();
+            IEnumerable<Order>? orders;
+            try {
 
-                if (!allOrders.Any())
-                    throw new NoContentException("No hay ordenes");
-            
+                if (status == null && customerId == null)
+                {
 
-                var filtered = allOrders.AsQueryable();
+                    orders = await _repository.GetAll<Order>();
+                }
+                else
+                {
+                    orders = await _repository.GetFiltered<Order>(
+                        o => (status == null || o.Status == status.Value) &&
+                            (customerId == null || o.CustomerId == customerId.Value)
+                            );
 
-                if (!string.IsNullOrWhiteSpace(status))
-                    filtered = filtered.Where(o => o.Status.ToString().Equals(status, StringComparison.OrdinalIgnoreCase));
+                   // if(orders == null || !orders.Any()) throw new NoContentException("No hay ordenes que coincidan con los filtros");
 
-                if (customerId.HasValue)
-                    filtered = filtered.Where(o => o.CustomerId == customerId.Value);
+                }
+                               
 
-                return filtered;
+                return orders;
             }
-            catch{
-                throw new InternalServerError("El servidor falló inesperadamente");
+            catch (InternalServerErrorException)
+            {
+            throw new InternalServerErrorException("El servidor falló inesperadamente");
             }
         }
 

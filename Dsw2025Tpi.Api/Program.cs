@@ -24,7 +24,7 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
-           options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Dsw2025Tpi;Integrated Security=True;",
+           options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Dsw2025Tpi;Integrated Security=True;MultipleActiveResultSets=True;",
            x=>x.MigrationsAssembly("Dsw2025Tpi.Api")
            )
           
@@ -46,7 +46,7 @@ public class Program
                 context.Database.EnsureCreatedAsync();
 
                 // Solo esta línea para Customer
-                context.InicializateJson<Customer, CustomerModel.RequestCustomer>("D:\\Facultad\\3er nivel\\DSW\\TPI\\Dsw2025Tpi\\Dsw2025Tpi.Application\\Dtos\\Customers.json",
+                context.InicializateJson<Customer, CustomerModel.RequestCustomer>("C:\\Users\\campo\\OneDrive - frt.utn.edu.ar\\Escritorio\\UTN\\Desarrollo de Software\\ej15\\Dsw2025Tpi\\Dsw2025Tpi.Application\\Dtos\\Customers.json",
                     dto => new Customer(dto.name, dto.email, dto.phoneNumber));
             }
             catch (Exception ex)

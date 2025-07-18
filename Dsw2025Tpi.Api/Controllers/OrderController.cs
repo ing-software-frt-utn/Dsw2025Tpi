@@ -1,4 +1,5 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -37,18 +38,17 @@ namespace Dsw2025Tpi.Api.Controllers
             return Ok(orden);
         }
 
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpGet]
         public async Task<IActionResult> GetOrders(
-        string? status,
+        OrderStatus? status,
         Guid? customerId)
 
         {
-                var filteredOrders = await _service.GetFilteredOrders(status, customerId);
+            var Orders = await _service.GetFilteredOrders(status, customerId);
+            if (!Orders.Any()) return NoContent();
 
-                var total = filteredOrders.Count();
-
-
-                return Ok(filteredOrders);
+            return Ok(Orders);
         }
 
     }

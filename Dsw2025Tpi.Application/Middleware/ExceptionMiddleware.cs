@@ -67,11 +67,11 @@ namespace Dsw2025Tpi.Application.Middleware
                     break;
 
                 case NoContentException:
-                    statusCode = HttpStatusCode.NoContent; // 404 Not Found
+                    statusCode = HttpStatusCode.NoContent; // 204 Not Found
                     message = exception.Message;
                     break;
 
-                case InternalServerError:
+                case InternalServerErrorException:
                     statusCode = HttpStatusCode.InternalServerError; //500  Internal Server Error
                     message = exception.Message;
                     break;
