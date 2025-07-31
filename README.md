@@ -1,31 +1,55 @@
-# Trabajo Práctico Integrador
-## Desarrollo de Software
-### Backend
+# Integrantes
 
-## Introducción
-Se desea desarrollar una plataforma de comercio electrónico (E-commerce). 
-En esta primera etapa el objetivo es construir el módulo de Órdenes, permitiendo la gestión completa de éstas.
+.58212-Tártalo Aguirre Franco Emanuel-Franco.TartaloAguirre@alu.frt.utn.edu.ar
 
-## Visión General del Producto
-Del relevamiento preliminar se identificaron los siguientes requisitos:
-- Los visitantes pueden consultar los productos sin necesidad de estar registrados o iniciar sesión.
-- Para realizar un pedido se requiere el inicio de sesión.
-- Una orden, para ser aceptada, debe incluir la información básica del cliente, envío y facturación.
-- Antes de registrar la orden se debe verificar la disponibilidad de stock (o existencias) de los productos.
-- Si la orden es exitosa hay que actualizar el stock de cada producto.
-- Se deben poder consultar órdenes individuales o listar varias con posibilidad de filtrado.
-- Será necesario el cambio de estado de una orden a medida que avanza en su ciclo de vida.
-- Los administradores solo pueden gestionar los productos (alta, modificación y baja) y actualizar el estado de la orden.
-- Los clientes pueden crear y consultar órdenes.
+.57873-Campos Lucas Gonzalo-Lucas.Campos@alu.frt.utn.edu.ar
 
-[Documento completo](https://frtutneduar.sharepoint.com/:b:/s/DSW2025/ETueAd4rTe1Gilj_Yfi64RYB5oz9s2dOamxKSfMFPREbiA?e=azZcwg) 
+.58185-Rodriguez Hector Martin-HectorMartin.Rodriguez@alu.frt.utn.edu.ar
 
-## Alcance para el Primer Parcial
-> [!IMPORTANT]
-> Del apartado `IMPLEMENTACIÓN` (Pag. 7), completo hasta el punto `6` (inclusive)
+## Instrucciones claras y concisas para concisas para configurar y ejecutar el proyecto localmente
 
 
-### Características de la Solución
 
-- Lenguaje: C# 12.0
-- Plataforma: .NET 8
+### instrucción los endpoints y como usarlos 
+
+OrderController (api/orders)
+
+POST /api/orders
+•	Crea una nueva orden.
+•	Recibe un objeto OrderModel.CreateOrderRequest en el cuerpo de la solicitud.
+•	Devuelve la orden creada y un código 201 si es exitosa.
+
+GET /api/orders/{id}
+•	Obtiene una orden por su identificador (GUID).
+•	Devuelve la orden si existe, o 404 si no se encuentra.
+
+ProductController (api/products)
+
+POST /api/products
+•	Crea un nuevo producto.
+•	Recibe un objeto ProductModel.request en el cuerpo de la solicitud.
+•	Devuelve el producto creado y un código 201.
+
+GET /api/products
+•	Obtiene la lista de todos los productos.
+•	Devuelve un array de productos o 204 si no hay productos.
+
+GET /api/products/{id}
+•	Obtiene un producto por su identificador (GUID).
+•	Devuelve el producto si existe.
+
+PUT /api/products/{id}
+•	Actualiza un producto existente.
+•	Recibe los datos actualizados en el cuerpo de la solicitud.
+•	Devuelve el producto actualizado.
+
+PATCH /api/products/{id}
+•	Deshabilita un producto (no elimina, solo lo marca como inactivo).
+•	No requiere body, solo el id en la URL.
+•	Devuelve 204 si es exitoso.
+
+Notas adicionales
+
+•Todos los endpoints devuelven respuestas estándar HTTP (200, 201, 204, 400, 404).
+•El manejo de errores está centralizado mediante un middleware de excepciones.
+•Utiliza Swagger (si está en desarrollo) para probar los endpoints visualmente.
