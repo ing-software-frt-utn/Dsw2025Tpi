@@ -17,7 +17,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductModel.Request dto)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductModel.ProductRequest dto)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateProduct(Guid id, ProductModel.UpdateRequest model)
+        public async Task<IActionResult> UpdateProduct(Guid id, ProductModel.UpdateProductRequest model)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace Dsw2025Tpi.Api.Controllers
             var status = await _service.DisableProductAsync(id);
             if(!status)
                 return NotFound();
-            return NoContent();
+            return NoContent(); //204
         }
     }
 }

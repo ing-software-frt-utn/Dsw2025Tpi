@@ -49,8 +49,8 @@ public class Dsw2025TpiContext: DbContext
                 .HasMaxLength(60)
                 .IsRequired();
             orderBuilder.Property(o => o.Notes)
-                .HasMaxLength(60)
-                .IsRequired();
+                .HasMaxLength(100)
+                .IsRequired(false);
             orderBuilder.Property(o => o.TotalAmount)
                 .HasPrecision(15, 2)
                 .IsRequired();
@@ -60,12 +60,12 @@ public class Dsw2025TpiContext: DbContext
                 .HasMaxLength(20)
                 .IsRequired();
 
-            orderBuilder.HasMany(o => o.Items) // Relación uno a muchos
+            orderBuilder.HasMany(o => o.Items) 
                 .WithOne(i => i.Order)
                 .HasForeignKey(o => o.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            orderBuilder.HasOne(o => o.Customer) // Relación muchos a uno
+            orderBuilder.HasOne(o => o.Customer) 
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -82,7 +82,7 @@ public class Dsw2025TpiContext: DbContext
                 .HasPrecision(15, 2)
                 .IsRequired();
 
-            orderItemBuilder.HasOne(i => i.Product) //Relación muchos a uno
+            orderItemBuilder.HasOne(i => i.Product)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(i => i.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);

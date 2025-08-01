@@ -2,8 +2,10 @@
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Repositories;
+using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Dsw2025Tpi.Api;
 
@@ -27,13 +29,41 @@ public class Program
 
         builder.Services.AddScoped<ProductsManagmentService>();
 
+        builder.Services.AddScoped<OrderManagementService>();
+
         builder.Services.AddControllers();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
+        //seed clientes
+        using (var scope = app.Services.CreateScope())
+        {
+            var ctx = scope.ServiceProvider.GetRequiredService<Dsw2025TpiContext>();
+
+            if (!ctx.Customers.Any())
+            {
+                // Ruta al JSON en el directorio de salida
+                var dataFolder = Path.Combine(AppContext.BaseDirectory, "Data");
+                var filePath = Path.Combine(dataFolder, "customers.json");
+
+                if (!File.Exists(filePath))
+                    throw new FileNotFoundException($"No encontré {filePath}");
+
+                var json = File.ReadAllText(filePath);
+                var customers = JsonSerializer.Deserialize<List<Customer>>(json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (customers?.Any() == true)
+                {
+                    ctx.Customers.AddRange(customers);
+                    ctx.SaveChanges();
+                }
+            }
+        }
+
         if (app.Environment.IsDevelopment())
         {
+            app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI();
         }

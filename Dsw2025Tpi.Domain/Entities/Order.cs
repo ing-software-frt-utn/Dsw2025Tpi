@@ -12,7 +12,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public DateTime Date { get; set; }
         public string ShippingAddress { get; set; }
         public string BillingAddress { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         public decimal TotalAmount { get; set; }
 
         public OrderStatus Status { get; set; } = OrderStatus.Pending;

@@ -19,7 +19,7 @@ namespace Dsw2025Tpi.Application.Services
             _repository = repository;
         }
 
-        public async Task<ProductModel.Response> CreateProductAsync (ProductModel.Request dto)
+        public async Task<ProductModel.ProductResponse> CreateProductAsync (ProductModel.ProductRequest dto)
         {
             if(string.IsNullOrEmpty(dto.Sku) ||
                string.IsNullOrWhiteSpace(dto.Name) ||
@@ -44,7 +44,7 @@ namespace Dsw2025Tpi.Application.Services
 
             var created = await _repository.Add<Product>(product);
 
-            return new ProductModel.Response(
+            return new ProductModel.ProductResponse(
                 created.Id,
                 created.Sku,
                 created.InternalCode,
@@ -56,7 +56,7 @@ namespace Dsw2025Tpi.Application.Services
            
         }
 
-        public async Task<List<ProductModel.Response>> GetProductsAsync()
+        public async Task<List<ProductModel.ProductResponse>> GetProductsAsync()
         {
             var products = await _repository.GetAll<Product>();
 
@@ -65,10 +65,10 @@ namespace Dsw2025Tpi.Application.Services
                 .ToList();
 
             if (!activeProducts.Any())
-                return new List<ProductModel.Response>();
+                return new List<ProductModel.ProductResponse>();
 
             var productsList = activeProducts
-                .Select(p => new ProductModel.Response(
+                .Select(p => new ProductModel.ProductResponse(
                     p.Id,
                     p.Sku,
                     p.InternalCode,
@@ -81,14 +81,14 @@ namespace Dsw2025Tpi.Application.Services
             return productsList;
         }
 
-        public async Task<ProductModel.Response> GetProductByIdAsync(Guid id)
+        public async Task<ProductModel.ProductResponse> GetProductByIdAsync(Guid id)
         {
             var product = await _repository.GetById<Product>(id);
 
             if (product == null)
                 return null;
 
-            return new ProductModel.Response(
+            return new ProductModel.ProductResponse(
                 product.Id,
                 product.Sku,
                 product.InternalCode,
@@ -99,7 +99,7 @@ namespace Dsw2025Tpi.Application.Services
                 );
         }
 
-        public async Task<ProductModel.Response> UpdateProductAsync(Guid id, ProductModel.UpdateRequest dto)
+        public async Task<ProductModel.ProductResponse> UpdateProductAsync(Guid id, ProductModel.UpdateProductRequest dto)
         {
             var product = await _repository.GetById<Product>(id);
 
@@ -120,7 +120,7 @@ namespace Dsw2025Tpi.Application.Services
 
             var update = await _repository.Update<Product>(product);
 
-            return new ProductModel.Response(
+            return new ProductModel.ProductResponse(
                 update.Id,
                 update.Sku,
                 update.InternalCode,
@@ -143,6 +143,8 @@ namespace Dsw2025Tpi.Application.Services
 
             return true;
         }
+
+
     
     }
 }

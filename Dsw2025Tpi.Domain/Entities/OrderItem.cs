@@ -10,7 +10,7 @@ namespace Dsw2025Tpi.Domain.Entities
     {
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
-        public int SubTotal { get; set; }
+        public decimal SubTotal { get; set; }
 
         public Guid OrderId { get; set; } //Fk de Order
         public Order? Order { get; set; } //OrderItem sabe en que Order se encuentra 

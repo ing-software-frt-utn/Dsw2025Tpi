@@ -22,5 +22,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Dsw2025Tpi.Application\Dsw2025Tpi.Application.csproj" />
   </ItemGroup>
-
+	
+  <ItemGroup>
+	<None Include="..\Dsw2025Tpi.Data\Sources\customers.json">
+	    <Link>Data\customers.json</Link>
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+  </ItemGroup>
+	
 </Project>

@@ -9,7 +9,7 @@ namespace Dsw2025Tpi.Application.Dtos
 {
     public class ProductModel
     {
-        public record Request(
+        public record ProductRequest(
             string Sku,
             string InternalCode,
             string Name,
@@ -18,7 +18,7 @@ namespace Dsw2025Tpi.Application.Dtos
             int StockQuantity
         );
 
-        public record Response (
+        public record ProductResponse (
             Guid Id,
             string Sku,
             string InternalCode,
@@ -28,7 +28,7 @@ namespace Dsw2025Tpi.Application.Dtos
             int StockQuantity
         );
 
-        public record UpdateRequest(
+        public record UpdateProductRequest(
             string Name,
             string Description,
             decimal CurrentUnitPrice,
