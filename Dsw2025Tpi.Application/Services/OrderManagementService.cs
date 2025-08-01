@@ -19,6 +19,11 @@ namespace Dsw2025Tpi.Application.Services
 
         public async Task<OrderModel.OrderResponse> CreateOrderAsync(OrderModel.OrderRequest dtoRequest)
         {
+            if (dtoRequest == null)
+                throw new ArgumentException("El cuerpo de la petición no puede estar vacio.");
+
+            if (dtoRequest.OrderItems == null || !dtoRequest.OrderItems.Any())
+                throw new ArgumentException("La orden debe contener al menos un item.");
 
             //subtotal y stock
             var items = new List<OrderItem>();
@@ -88,5 +93,61 @@ namespace Dsw2025Tpi.Application.Services
             );
             
         }
+
+        public async Task<List<OrderModel.OrderResponse>> GetOrdersAsync(
+            OrderStatus? status = null,
+            Guid? customerId = null)
+            //int pageNumber = 1,
+            //int pageSize = 10)
+        {
+            var orders = await _repository.GetAll<Order>("Items") ?? new List<Order>();
+
+
+            if (status.HasValue)
+            {
+                orders = orders
+                    .Where(o => o.Status == status.Value)
+                    .ToList();
+            }
+
+            if (customerId.HasValue)
+            {
+                orders = orders
+                    .Where(o => o.CustomerId == customerId.Value)
+                    .ToList();
+            }
+
+            orders = orders
+                .OrderByDescending(o => o.Date)
+                .ToList();
+
+            //var skip = (pageNumber - 1) * pageSize;
+            //var page = orders
+            //    .Skip(skip)
+            //    .Take(pageSize)
+            //    .ToList();
+
+            //if(!page.Any())
+            //    return new List<OrderModel.OrderResponse>();
+
+            var orderList = orders.Select(o => new OrderModel.OrderResponse(
+                o.Id,
+                o.CustomerId,
+                o.Date,
+                o.ShippingAddress,
+                o.BillingAddress,
+                o.TotalAmount,
+                o.Items.Select(i => new OrderModel.OrderItemResponse(
+                    i.ProductId,
+                    i.Quantity,
+                    i.UnitPrice,
+                    i.SubTotal
+                )).ToList()
+            )).ToList();
+
+            return orderList;
+        }
+
+
     }
 }
