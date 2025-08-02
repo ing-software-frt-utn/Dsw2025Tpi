@@ -2,6 +2,7 @@
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Dsw2025Tpi.Api.Controllers
 {
@@ -41,21 +42,46 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _service.GetProductsAsync();
-            if (products.Count == 0)
-                return NoContent(); //204
+            try
+            {
+                var products = await _service.GetProductsAsync();
 
-            return Ok(products); //200
+                if (products.Count == 0)
+                    return Ok(new
+                    {
+                        message = "No hay productos cargados.",
+                        data = products
+                    });
+
+                return StatusCode(StatusCodes.Status200OK, products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
-            var product = await _service.GetProductByIdAsync(id);
+            try
+            {
+                var product = await _service.GetProductByIdAsync(id);
 
-            if(product == null)
-                return NotFound(); //404
-            return Ok(product);
+                if (product == null)
+                    return NotFound(); //404
+                return Ok(product);
+            }
+            catch(KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
         }
 
         [HttpPut("{id:guid}")]
@@ -74,15 +100,27 @@ namespace Dsw2025Tpi.Api.Controllers
             {
                 return BadRequest(ae.Message);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
-        [HttpPatch("{id:guid}")]
+        [HttpPatch("{id:guid}/isActive")]
         public async Task<IActionResult> DisableProduct(Guid id)
         {
-            var status = await _service.DisableProductAsync(id);
-            if(!status)
-                return NotFound();
-            return NoContent(); //204
+            try
+            {
+                var status = await _service.DisableProductAsync(id);
+                if (!status)
+                    return NotFound();
+                return NoContent(); //204
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
         }
     }
 }

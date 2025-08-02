@@ -2,6 +2,7 @@
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2025Tpi.Api.Controllers
@@ -38,28 +39,75 @@ namespace Dsw2025Tpi.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrders (
             [FromQuery] OrderStatus? status,
-            [FromQuery] Guid? customerId)
-            //[FromQuery] int pageNumber = 1,
-            //[FromQuery] int pageSize = 10)
+            [FromQuery] Guid? customerId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
             try
             {
                 var list = await _orderManagementService.GetOrdersAsync(
                     status, 
-                    customerId
-                    //pageNumber: pageNumber,
-                    //pageSize: pageSize
+                    customerId,
+                    pageNumber,
+                    pageSize
                 );
 
                 if (!list.Any())
-                    return NoContent();
+                    return Ok(new
+                    {
+                        message = "No se encontró ninguna Order.",
+                        data = list
+                    });
 
-                return Ok(list);
+                return StatusCode(StatusCodes.Status200OK, list);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message });
             }
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetOrderById(Guid id)
+        {
+            try
+            {
+                var order = await _orderManagementService.GetOrderByIdAsync(id);
+                return StatusCode(StatusCodes.Status202Accepted, order);
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpPut("{id:guid}/status")]
+        public async Task<IActionResult> UpdateOrder (Guid id, [FromBody] OrderModel.UpdateOrderStatusRequest orderStatusDto)
+        {
+            try
+            {
+                var orderUpdate = await _orderManagementService.UpdateStatusAsync(id, orderStatusDto.NewStatus);
+                return StatusCode(StatusCodes.Status200OK, orderUpdate);
+
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(new { error = ae.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
+
         }
     }
 }

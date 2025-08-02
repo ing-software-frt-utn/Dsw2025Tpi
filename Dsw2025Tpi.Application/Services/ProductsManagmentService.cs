@@ -86,7 +86,7 @@ namespace Dsw2025Tpi.Application.Services
             var product = await _repository.GetById<Product>(id);
 
             if (product == null)
-                return null;
+                throw new KeyNotFoundException($"El Producto con id: '{id}' no existe.");
 
             return new ProductModel.ProductResponse(
                 product.Id,

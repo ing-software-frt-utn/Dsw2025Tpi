@@ -6,6 +6,7 @@ using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Dsw2025Tpi.Api;
 
@@ -24,6 +25,13 @@ public class Program
         {
             option.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Dsw2025Db;Integrated Security=True");
         });
+
+        builder.Services.AddControllers()
+            .AddJsonOptions(opt =>
+            {
+                // <-- Esto convierte siempre los enums a sus nombres de string
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
         builder.Services.AddScoped<IRepository, EfRepository>();
 

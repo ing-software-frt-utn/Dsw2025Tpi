@@ -25,7 +25,6 @@ namespace Dsw2025Tpi.Application.Services
             if (dtoRequest.OrderItems == null || !dtoRequest.OrderItems.Any())
                 throw new ArgumentException("La orden debe contener al menos un item.");
 
-            //subtotal y stock
             var items = new List<OrderItem>();
             decimal total = 0m;
 
@@ -44,7 +43,6 @@ namespace Dsw2025Tpi.Application.Services
                 product.StockQuantity -= item.Quantity;
                 await _repository.Update<Product>(product);
 
-                //entidad OrderItem
                 items.Add(new OrderItem
                 {
                     ProductId = product.Id,
@@ -52,10 +50,8 @@ namespace Dsw2025Tpi.Application.Services
                     UnitPrice = product.CurrentUnitPrice,
                     SubTotal = subTotal
                 });
-
             }
 
-            //create Order
             var orderEntity = new Order
             {
                 CustomerId = dtoRequest.CustomerId,
@@ -65,17 +61,15 @@ namespace Dsw2025Tpi.Application.Services
                 TotalAmount = total,
             };
 
-            //add itemas to Order
             foreach(var oi in items)
                 orderEntity.Items.Add(oi);
 
-            //save Order (order + items)
             var createOrder = await _repository.Add<Order>(orderEntity);
 
-            //Map DTO respuesta
             var responseItems = items
                 .Select(item => new OrderModel.OrderItemResponse(
                     item.ProductId,
+                    item.Product?.Name ?? "<sin nombre>",
                     item.Quantity,
                     item.UnitPrice,
                     item.SubTotal
@@ -84,24 +78,23 @@ namespace Dsw2025Tpi.Application.Services
 
             return new OrderModel.OrderResponse(
                 createOrder.Id,
+                createOrder.Status,
                 createOrder.CustomerId,
                 createOrder.Date,
                 createOrder.ShippingAddress,
                 createOrder.BillingAddress,
                 createOrder.TotalAmount,
                 responseItems
-            );
-            
+            ); 
         }
 
         public async Task<List<OrderModel.OrderResponse>> GetOrdersAsync(
             OrderStatus? status = null,
-            Guid? customerId = null)
-            //int pageNumber = 1,
-            //int pageSize = 10)
+            Guid? customerId = null,
+            int pageNumber = 1,
+            int pageSize = 10)
         {
-            var orders = await _repository.GetAll<Order>("Items") ?? new List<Order>();
-
+            var orders = await _repository.GetAll<Order>("Items", "Items.Product") ?? new List<Order>();
 
             if (status.HasValue)
             {
@@ -121,24 +114,26 @@ namespace Dsw2025Tpi.Application.Services
                 .OrderByDescending(o => o.Date)
                 .ToList();
 
-            //var skip = (pageNumber - 1) * pageSize;
-            //var page = orders
-            //    .Skip(skip)
-            //    .Take(pageSize)
-            //    .ToList();
+            var skip = (pageNumber - 1) * pageSize;
+            var page = orders
+                .Skip(skip)
+                .Take(pageSize)
+                .ToList();
 
-            //if(!page.Any())
-            //    return new List<OrderModel.OrderResponse>();
+            if (!page.Any())
+                return new List<OrderModel.OrderResponse>(); //204 NoContent
 
-            var orderList = orders.Select(o => new OrderModel.OrderResponse(
-                o.Id,
-                o.CustomerId,
-                o.Date,
-                o.ShippingAddress,
-                o.BillingAddress,
-                o.TotalAmount,
-                o.Items.Select(i => new OrderModel.OrderItemResponse(
+            var orderList = page.Select(order => new OrderModel.OrderResponse(
+                order.Id,
+                order.Status,
+                order.CustomerId,
+                order.Date,
+                order.ShippingAddress,
+                order.BillingAddress,
+                order.TotalAmount,
+                order.Items.Select(i => new OrderModel.OrderItemResponse(
                     i.ProductId,
+                    i.Product?.Name ?? "<sin nombre>",
                     i.Quantity,
                     i.UnitPrice,
                     i.SubTotal
@@ -148,6 +143,47 @@ namespace Dsw2025Tpi.Application.Services
             return orderList;
         }
 
+        public async Task<OrderModel.OrderResponse> GetOrderByIdAsync(Guid id)
+        {
+            var order = await _repository.GetById<Order>(id, "Items", "Items.Product");
+
+            if (order == null)
+                throw new KeyNotFoundException($"La Orden con id:'{id}' no existe");
+
+            return new OrderModel.OrderResponse(
+                order.Id,
+                order.Status,
+                order.CustomerId,
+                order.Date,
+                order.ShippingAddress,
+                order.BillingAddress,
+                order.TotalAmount,
+                order.Items.Select(i => new OrderModel.OrderItemResponse(
+                    i.ProductId,
+                    i.Product?.Name ?? "<sin nombre>",
+                    i.Quantity,
+                    i.UnitPrice,
+                    i.SubTotal
+                )).ToList()
+             );     
+        }
+
+        public async Task<OrderModel.OrderResponse> UpdateStatusAsync(Guid id, OrderStatus newStatus)
+        {
+            var order = await _repository.GetById<Order>(id);
+
+            if (order == null)
+                throw new KeyNotFoundException($"La orden con id: '{id}' no existe.");
+
+            if(order.Status == newStatus)
+                return await GetOrderByIdAsync(id);
+
+            order.Status = newStatus;
+
+            await _repository.Update<Order>(order);
+
+            return await GetOrderByIdAsync(id);
+        }
 
     }
 }
